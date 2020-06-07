@@ -24,7 +24,7 @@ public class Client {
 			
 			prettyOutput.write("id kim_chulsuaaa\0");
 			prettyOutput.flush();
-			
+			//asdfasdfas
 			// server에서 데이터를 받아오기 위한 InputStream 세팅
 			// InputStream만 이용해도 client가 보낸 데이터를 받을 수 있지만 byte로 받아오기 때문에 
 			InputStream baseInputStream = server.getInputStream();
