@@ -100,14 +100,17 @@ class ServerProcessor {
 						String[] ClientData = request.split("/"); 
 						
 						if(ClientData[0].equals("User")) {
-							receiveUserData(ClientData[1]); // 로그인을 위한 데이터 일경우 
+							ReceiveUserData(ClientData[1]); // 로그인을 위한 데이터 일경우 
 						}
 						else if(ClientData[0].equals("Finger")) {
-							receiveFingeDatar(ClientData[1]); // 지문데이터일 경우 
+							ReceiveFingeData(ClientData[1]); // 지문데이터일 경우 
 						}
 						else if(ClientData[0].equals("NewAcount")){
-							receiveNewAccount(ClientData[1]); // 새로 계정을 생성하고자 하는 경우 
-						}
+							ReceiveNewAccount(ClientData[1]); // 새로 계정을 생성하고자 하는 경우 
+						} 
+						else if(ClientData[0].equals("Patient")) {
+							NewPatientData(ClientData[1]);
+						} 
 						else {
 							System.out.println("잘못된 값을 받았습니다");	
 						}
@@ -120,9 +123,67 @@ class ServerProcessor {
 		}
 		
 		
+		// ================클라이언트로가 추가로 환자를 등록할 경우 실행 
+		public void NewPatientData(String ClientData) {
+			String[] patientInformation = ClientData.split(" ");
+			
+			System.out.print("환자를 추가합니다 : ");
+			for(String i : patientInformation) {
+				System.out.print(i + " ");
+			}
+			
+			Connection con = null;
+			ResultSet rs = null;
+			PreparedStatement pstmt = null;
+			
+			String sql = "select * from patient_info where social = ?";
+			String sql2 = "insert into patient_info (name, sex, age, social, phone, job) values (?,?,?,?,?,?)";
+			
+			try {
+				Class.forName(driver);
+				
+				con = DriverManager.getConnection(jdburl, dbId, dbPw);
+				
+				pstmt = con.prepareStatement(sql);
+				pstmt.setString(1, patientInformation[3]);
+				rs = pstmt.executeQuery();
+				
+				// 쿼리문을 실행하여 해당 주민등록번호가 존재한다면 "True"
+				if(rs.next()) { 
+					sendResponseToClient("Not making");
+				} else {
+					pstmt = con.prepareStatement(sql2);
+					pstmt.setString(1, patientInformation[0]); // 이름 입력
+					pstmt.setString(2,  patientInformation[1]); // 성별 입력
+					pstmt.setString(3,  patientInformation[2]); // 나이 입력
+					pstmt.setString(4,  patientInformation[3]); // 주민등록번호 입력
+					pstmt.setString(5,  patientInformation[4]); // 휴대전화번호 입력
+					pstmt.setString(6,  patientInformation[5]); // 직업 입력
+					
+					pstmt.executeUpdate();
+					
+					sendResponseToClient("Done adding");
+				}
+			} catch(ClassNotFoundException e) {
+				System.out.println("해당 클래스를 찾을 수 없습니다.");
+			} catch(SQLException e) {
+				e.printStackTrace();
+			} catch(Exception e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					if(con != null && !con.isClosed()) {
+						con.close();
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		
 		// ================클라이언트로부터 지문 데이터를 받았을 경우 실행
-		public void receiveFingeDatar(String ClientData) {
-			 String fingerData = ClientData;
+		public void ReceiveFingeData(String ClientData) {
 			 try {
 				 
 				 Connection con  = null; 
@@ -166,12 +227,16 @@ class ServerProcessor {
 						rsmd = rs.getMetaData();
 						number = rsmd.getColumnCount();
 						
-						rs.next();
-						for(int i = 2; i <= number; i++) {
-							result += rs.getNString(i);
-							result += "#";
+						while(rs.next()) {
+						//if(rs.next()) { // 환자의 진료기록이 존재한다면 데이터를 가져옴 
+							for(int i = 3; i <= number; i++) {
+								result += rs.getNString(i);
+								result += "#";
+							}
+							result = result.substring(0, result.length() - 1); // 마지막에 붙은 # 제거 
+							result += "&";
 						}
-						result = result.substring(0, result.length() - 1); // 마지막에 붙은 # 제거 
+						result = result.substring(0, result.length() - 1); // 마지막에 붙은 & 제거 
 						System.out.println(result);
 						
 						sendResponseToClient(result);
@@ -201,7 +266,7 @@ class ServerProcessor {
 		
 		
 		// ================ 새로 생성가능한 계정인지 판단 
-		public void receiveNewAccount(String ClientData) {
+		public void ReceiveNewAccount(String ClientData) {
 			String[] newClient = ClientData.split(" ");
 			
 			System.out.print("Client가 새로 생성하려는 계정 정보 : ");
@@ -290,7 +355,7 @@ class ServerProcessor {
 		
 		// 등록된 사용자인지 확인하는 부분( 등록된 사용자면 사용자에게 반응 )
 		// ================ 클라이언트쪽에서 서버로부터 응답을 받아 사용자 구분		
-		public void receiveUserData(String ClientData) {
+		public void ReceiveUserData(String ClientData) {
 			String[] userData = ClientData.split(" ", 2);
 			boolean loginDB = false;
 			System.out.println("접속을 시도하는 Client의 ID와 PW : " + userData[0]+ " | " + userData[1]);

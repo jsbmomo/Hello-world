@@ -27,8 +27,10 @@ public class FingerPrint {
 			ServerConnect server = new ServerConnect();
 			String sendString = "Finger/"  + fingerData + "\0";
 			boolean judge;
+			
 			// 서버에 입력값을 보냄
 			judge = server.sendData(sendString);
+			PassString.fingerData(fingerData); // 현재 환자의 지문데이터를 저장 
 			
 			if(judge) System.out.println("지문데이터를 서버에 데이터 전송하였습니다");
 			else System.out.println("지문데이터 전송에 문제가 발생하였습니다.");
@@ -46,9 +48,8 @@ public class FingerPrint {
 				
 				System.out.println("Exist Patient Data");
 				
-				
-				SetData serverData = new SetData();
-				serverData.setServerData(userData[1]); // 서버로부터 받은 값을 화면을 출력할 객체에 전달 
+				// 서버로부터 받은 값을 화면을 출력할 객체에 전달
+				PassString.setReceiveData(userData[1]);  
 				
 				Parent fingerPage = FXMLLoader.load(getClass().getResource("/application/PatientView.fxml"));
 				Stage stage = new Stage();
@@ -81,7 +82,3 @@ public class FingerPrint {
 	}
 	
 }
-
-//https://okky.kr/article/56870
-
-

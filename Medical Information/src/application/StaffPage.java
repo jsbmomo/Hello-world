@@ -24,6 +24,7 @@ public class StaffPage implements Initializable{
 	@FXML private Button backToLogin;
 	@FXML private Button printDocu;
 	@FXML private Button printFinger;
+	@FXML private Button addToPatient;
 	
 	public void initialize(URL location, ResourceBundle resources) {
 		backToLogin.setOnAction(e->loginOut(e));
@@ -80,7 +81,6 @@ public class StaffPage implements Initializable{
 	// 만약 지문 입력 버튼을 눌렀을 경우
 	public void inputFingerprint(ActionEvent event) {  
 		try {
-			
 			System.out.println("click Input Fingerprint Button");
 			
 			Parent fingerPage = FXMLLoader.load(getClass().getResource("/application/FingerInput.fxml"));
@@ -100,6 +100,11 @@ public class StaffPage implements Initializable{
 		try {
 			System.out.println("Add patient!");
 			
+			Parent patient = FXMLLoader.load(getClass().getResource("/application/AddPatientInfo.fxml"));
+			Stage stage = new Stage();
+			stage.setScene(new Scene(patient));
+			stage.setTitle("환자 추가");
+			stage.show();
 
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -107,4 +112,3 @@ public class StaffPage implements Initializable{
 	}
 
 }
-

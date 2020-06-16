@@ -23,7 +23,7 @@
             <Font name="System Bold Italic" size="15.0" />
          </font>
       </Button>
-      <Button layoutX="130.0" layoutY="200.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="190.0" text="신규 등록">
+      <Button layoutX="130.0" layoutY="200.0" mnemonicParsing="false" onAction="#addPatient" prefHeight="40.0" prefWidth="190.0" text="신규 등록">
          <font>
             <Font name="System Bold Italic" size="15.0" />
          </font>

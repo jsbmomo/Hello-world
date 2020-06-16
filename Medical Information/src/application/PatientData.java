@@ -1,18 +1,20 @@
 package application;
 
 
-import java.net.URL;
-import java.util.ResourceBundle;
-
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 
-public class PatientData  {
+public class PatientData {
 
 	@FXML private Pane patientViewPane;
 	@FXML private Label lblName;
@@ -21,61 +23,81 @@ public class PatientData  {
 	@FXML private Label lblJob;
 	@FXML private Label lblPhone;
 	@FXML private Label lblSocial;
+	@FXML private Button btnAddRegister;
 	
 	@FXML private TableView<PatientTableData> patientTable;
+	@FXML private TableColumn<PatientTableData, String> dateColumn;
+	@FXML private TableColumn<PatientTableData, String> hospitalColumn;
+	@FXML private TableColumn<PatientTableData, String> docterColumn;
+	@FXML private TableColumn<PatientTableData, String> registerColumn;
 	
+	ObservableList<PatientTableData> patientList;
 	/*ObservableList<PatientTableData> patientList = FXCollections.observableArrayList(
 		new PatientTableData()	
 	);*/
 	
 	@FXML
-	public void initialize() {
+	public void initialize()  { // 초기에 화면이 시작하면 실행
 
-		SetData receiveData = new SetData();
-		
-		String patientData = receiveData.getServerData();
+		// 정적 메소드를 사용하여 객체(고정된 메모리)에서 값을 가져옴
+		String receivePatientData = PassString.getReceiveData();  
 
-		System.out.println("Receive Server Data : " + patientData);
-		String[] patientRegister = patientData.split("#");
+		System.out.println("Receive Server Data : " + receivePatientData);
+		String[] patientInfo = receivePatientData.split("#", 7);
 		
-		for(String i : patientRegister) {
+		int count = 0; // 환자의 진료기록이 있다면 patientInfo의 문자열은 총 7개
+		for(String i : patientInfo) {
 			System.out.print(i + "  ");
+			count++;
 		}
 		
-		lblName.setText(patientRegister[0]);
-		lblSex.setText(patientRegister[1]);
-		lblAge.setText(patientRegister[2]);
-		lblSocial.setText(patientRegister[3]);
-		lblPhone.setText(patientRegister[4]);
-		lblJob.setText(patientRegister[5]);
-		
+		lblName.setText(patientInfo[0]);
+		lblSex.setText(patientInfo[1]);
+		lblAge.setText(patientInfo[2]);
+		lblSocial.setText(patientInfo[3]);
+		lblPhone.setText(patientInfo[4]);
+		lblJob.setText(patientInfo[5]);
+	
+		String[] patientData; // 환자의 진료기록을 저장할 문자열 
+		if(count >= 7) {
+			if(patientInfo[6].contains("&")) {
+				patientData = patientInfo[6].split("&");
+			}
+			//else patientData +=  patientInfo[6];
+			
+			/*PatientTableData tableData = new PatientTableData();
+			for(String array : patientData) {
+				String[] register = array.split("#");
+				patientList.add(FXCollections.observableArrayList( //new PatientTableData(new SimpleStringProperty(patientData[0]), new SimpleStringProperty(patientData[1]), new SimpleStringProperty(patientData[2]), new SimpleStringProperty(PatientData[3]));
+						
+						PatientTableData(register[0], register[2], register[1], register[3])	
+				));
+			}
+			
+			patientList = FXCollections.obervableArrayList();*/
+			
+			dateColumn.setCellValueFactory(cellData -> cellData.getValue().dateProperty());
+			hospitalColumn.setCellValueFactory(cellData -> cellData.getValue().hospitalProperty());
+			docterColumn.setCellValueFactory(cellData -> cellData.getValue().docterProperty()); 
+			registerColumn.setCellValueFactory(cellData -> cellData.getValue().registerProperty());
+			patientTable.setItems(patientList);
+		}
 	}
 	
-	/*
-	@FXML
-	public Pane patientViewPane(ActionEvent evnet) {
-		Pane patientPane = new Pane();
-		
-		SetData receiveData = new SetData();
-		
-		String patientData = receiveData.getServerData();
-		
-		System.out.println("Receive Server Data : " + patientData);
-		String[] patientRegister = patientData.split("#");
-		
-		for(String i : patientRegister) {
-			System.out.print(i + "  ");
-		}
-		
-		lblName.setText(patientRegister[0]);
-		lblSex.setText(patientRegister[1]);
-		lblAge.setText(patientRegister[2]);
-		lblSocial.setText(patientRegister[3]);
-		lblPhone.setText(patientRegister[4]);
-		lblJob.setText(patientRegister[5]);
-		
-		return patientPane;
-	}*/
 	
+	public void AddRegister(ActionEvent event) {
+		try {
+			System.out.println("Patient Register Additional");
+			
+			Parent printAgree = FXMLLoader.load(getClass().getResource("/application/PatientRegisterAdd.fxml"));
+			Stage stage = new Stage();
+			stage.setScene(new Scene(printAgree));
+			stage.setTitle("Print Agreement");
+			stage.show();
+
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
 }
