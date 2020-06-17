@@ -64,6 +64,9 @@ public class PatientData {
 			// 환자의 진단 기록을 날짜 별로 1차 분할
 			if(patientInfo[6].contains("&")) {  
 				patientData = patientInfo[6].split("&");
+			} else {
+				patientData = new String[1];
+				patientData[0] = patientInfo[6];
 			}
 			
 			// 분할한 환자의 진단 기록을 분류 
