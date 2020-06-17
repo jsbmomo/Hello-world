@@ -1,6 +1,9 @@
 package application;
 
 
+import java.util.ArrayList;
+
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -31,10 +34,6 @@ public class PatientData {
 	@FXML private TableColumn<PatientTableData, String> docterColumn;
 	@FXML private TableColumn<PatientTableData, String> registerColumn;
 	
-	ObservableList<PatientTableData> patientList;
-	/*ObservableList<PatientTableData> patientList = FXCollections.observableArrayList(
-		new PatientTableData()	
-	);*/
 	
 	@FXML
 	public void initialize()  { // 초기에 화면이 시작하면 실행
@@ -58,23 +57,25 @@ public class PatientData {
 		lblPhone.setText(patientInfo[4]);
 		lblJob.setText(patientInfo[5]);
 	
-		String[] patientData; // 환자의 진료기록을 저장할 문자열 
+		String[] patientData = null; // 환자의 진료기록을 저장할 문자열
+	
 		if(count >= 7) {
-			if(patientInfo[6].contains("&")) {
+			
+			// 환자의 진단 기록을 날짜 별로 1차 분할
+			if(patientInfo[6].contains("&")) {  
 				patientData = patientInfo[6].split("&");
 			}
-			//else patientData +=  patientInfo[6];
 			
-			/*PatientTableData tableData = new PatientTableData();
+			// 분할한 환자의 진단 기록을 분류 
+			ArrayList<PatientTableData> classification = new ArrayList<PatientTableData>();
 			for(String array : patientData) {
 				String[] register = array.split("#");
-				patientList.add(FXCollections.observableArrayList( //new PatientTableData(new SimpleStringProperty(patientData[0]), new SimpleStringProperty(patientData[1]), new SimpleStringProperty(patientData[2]), new SimpleStringProperty(PatientData[3]));
-						
-						PatientTableData(register[0], register[2], register[1], register[3])	
-				));
+				classification.add(
+						new PatientTableData(register[0], register[2], register[1], register[3])	
+				);
 			}
 			
-			patientList = FXCollections.obervableArrayList();*/
+			ObservableList<PatientTableData> patientList = FXCollections.observableArrayList(classification);
 			
 			dateColumn.setCellValueFactory(cellData -> cellData.getValue().dateProperty());
 			hospitalColumn.setCellValueFactory(cellData -> cellData.getValue().hospitalProperty());

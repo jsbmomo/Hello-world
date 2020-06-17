@@ -1,4 +1,4 @@
-package src;
+package server;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -110,6 +110,9 @@ class ServerProcessor {
 						} 
 						else if(ClientData[0].equals("Patient")) {
 							NewPatientData(ClientData[1]);
+						}
+						else if(ClientData[0].equals("Diagnosis")) {
+							NewDiagnosis(ClientData[1]);
 						} 
 						else {
 							System.out.println("잘못된 값을 받았습니다");	
@@ -120,6 +123,59 @@ class ServerProcessor {
 				System.out.println("Complited");
 				//client.close(); // client에 대한 작업이 끝낫으므로 소켓을 닫음.
 			} catch (IOException e) { e.printStackTrace(); }
+		}
+		
+		
+		
+		// ================새로운 진료기록을 DB에 추가 
+		public void NewDiagnosis(String ClientData) {
+			String[] newInformation = ClientData.split("#");
+			
+			System.out.print("데이터 추가 : ");
+			for(String i : newInformation) {
+				System.out.print(i + " ");
+			}
+			System.out.println("------------------");
+			
+			Connection con = null;
+			PreparedStatement pstmt = null;
+			
+			String sql = "insert into patient_data (id, hospital, docter, record) values (?,?,?,?)";
+			
+			try {
+				Class.forName(driver);
+				
+				con = DriverManager.getConnection(jdburl, dbId, dbPw);
+				
+				System.out.println("'"+Integer.valueOf(newInformation[0])+"'");
+				System.out.println("'"+newInformation[1]+"'");
+				System.out.println("'"+newInformation[2]+"'");
+				
+				pstmt = con.prepareStatement(sql);
+				pstmt.setInt(1, Integer.valueOf(newInformation[0]));
+				pstmt.setString(2, newInformation[1]);
+				pstmt.setString(3, newInformation[2]);
+				pstmt.setString(4, newInformation[3]);
+				//pstmt.executeUpdate(sql);
+				pstmt.executeUpdate();
+				
+				sendResponseToClient("NewData");
+				
+			}catch(ClassNotFoundException e) {
+				System.out.println("해당 테이블을 찾을 수 없습니다.");
+			}catch(SQLException e) {
+				e.printStackTrace();
+			}catch(Exception e) {
+				e.printStackTrace();
+			}finally {
+				try {
+					if(con != null && !con.isClosed()) {
+						con.close();
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		
 		
@@ -154,11 +210,11 @@ class ServerProcessor {
 				} else {
 					pstmt = con.prepareStatement(sql2);
 					pstmt.setString(1, patientInformation[0]); // 이름 입력
-					pstmt.setString(2,  patientInformation[1]); // 성별 입력
-					pstmt.setString(3,  patientInformation[2]); // 나이 입력
-					pstmt.setString(4,  patientInformation[3]); // 주민등록번호 입력
-					pstmt.setString(5,  patientInformation[4]); // 휴대전화번호 입력
-					pstmt.setString(6,  patientInformation[5]); // 직업 입력
+					pstmt.setString(2, patientInformation[1]); // 성별 입력
+					pstmt.setString(3, patientInformation[2]); // 나이 입력
+					pstmt.setString(4, patientInformation[3]); // 주민등록번호 입력
+					pstmt.setString(5, patientInformation[4]); // 휴대전화번호 입력
+					pstmt.setString(6, patientInformation[5]); // 직업 입력
 					
 					pstmt.executeUpdate();
 					
@@ -166,6 +222,7 @@ class ServerProcessor {
 				}
 			} catch(ClassNotFoundException e) {
 				System.out.println("해당 클래스를 찾을 수 없습니다.");
+				e.printStackTrace();
 			} catch(SQLException e) {
 				e.printStackTrace();
 			} catch(Exception e) {
@@ -184,29 +241,29 @@ class ServerProcessor {
 		
 		// ================클라이언트로부터 지문 데이터를 받았을 경우 실행
 		public void ReceiveFingeData(String ClientData) {
-			 try {
+			try {
 				 
-				 Connection con  = null; 
-				 ResultSet rs = null; // 초기 환자의 개인정보를 가져오기 위한 객체들
-				 PreparedStatement pstmt = null;
-				 ResultSetMetaData rsmd = null;
+				Connection con  = null; 
+				ResultSet rs = null; // 초기 환자의 개인정보를 가져오기 위한 객체들
+				PreparedStatement pstmt = null;
+				ResultSetMetaData rsmd = null;
 
-				 String sql = "select * from patient_info where id = ?";
-				 String sql2 = "select * from patient_data where id = ?";
+				String sql = "select * from patient_info where id = ?";
+				String sql2 = "select * from patient_data where id = ?";
+				
+				int number = 0; // DB의 열의 개수를 저장할 변수 
 				 
-				 int number = 0; // DB의 열의 개수를 저장할 변수 
-				 
-				 try {
-					 Class.forName(driver);
+				try {
+					Class.forName(driver);
 					 
-					 con = DriverManager.getConnection(jdburl, dbId, dbPw);
+					con = DriverManager.getConnection(jdburl, dbId, dbPw);
 					 
 					 // 환자의 개인정보를 가져오기 위해 수행 
-					 pstmt = con.prepareStatement(sql); // 먼저 spt문을 가져오고 
-					 pstmt.setString(1, ClientData); // ?( = 파라미터) 에 들어갈 값 지정   
-					 rs = pstmt.executeQuery(); // sql 문 실행하며 값 저장 
+					pstmt = con.prepareStatement(sql); // 먼저 spt문을 가져오고 
+					pstmt.setString(1, ClientData); // ?( = 파라미터) 에 들어갈 값 지정   
+					rs = pstmt.executeQuery(); // sql 문 실행하며 값 저장 
 					
-					 rsmd = rs.getMetaData(); // 컬럼의 총 데이터 수를 알기 위해 사용 
+					rsmd = rs.getMetaData(); // 컬럼의 총 데이터 수를 알기 위해 사용 
 					number = rsmd.getColumnCount(); // 데이터 길이만큼 가져와 저장 
 					
 					// 만약 클라이언트가 요청한 데이터가 있다면 
@@ -214,7 +271,7 @@ class ServerProcessor {
 						
 						String result = "exist/"; // 클라이언트에게 전송할 문자열 저장 
 
-						 for(int i = 2; i <= number; i++) {
+						for(int i = 2; i <= number; i++) {
 							result += rs.getNString(i); // DB내용에서 i번째 행의 내용을 가져옴 
 							result += "#"; // 각 데이터를 구분하기위한 구분자 
 						}

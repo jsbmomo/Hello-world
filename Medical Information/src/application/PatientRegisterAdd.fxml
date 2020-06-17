@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -9,11 +13,10 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="299.0" prefWidth="474.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.RegisterAdd">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="299.0" prefWidth="474.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.RegisterAdd">
    <children>
-      <Button layoutX="190.0" layoutY="245.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="94.0" text="Button" />
-      <GridPane gridLinesVisible="true" layoutX="28.0" layoutY="27.0" prefHeight="206.0" prefWidth="420.0">
+      <Button fx:id="btnSendData" layoutX="188.0" layoutY="243.0" mnemonicParsing="false" onAction="#newRegisterData" prefHeight="34.0" prefWidth="119.0" text="기록 추가" />
+      <GridPane layoutX="28.0" layoutY="27.0" prefHeight="206.0" prefWidth="420.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="219.0" minWidth="10.0" prefWidth="107.0" />
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="345.0" minWidth="10.0" prefWidth="340.0" />
@@ -24,27 +27,27 @@
           <RowConstraints maxHeight="148.0" minHeight="10.0" prefHeight="120.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <TextField prefHeight="33.0" prefWidth="340.0" promptText="담당 의사명" GridPane.columnIndex="1">
+            <TextField fx:id="txtHospital" prefHeight="33.0" prefWidth="340.0" promptText="병원명" GridPane.columnIndex="1">
                <font>
                   <Font size="15.0" />
                </font>
             </TextField>
-            <TextField prefHeight="32.0" prefWidth="340.0" promptText="병원" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <TextField fx:id="txtDocter" prefHeight="32.0" prefWidth="340.0" promptText="담당 의사" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <font>
                   <Font size="15.0" />
                </font>
             </TextField>
-            <TextField prefHeight="108.0" prefWidth="340.0" promptText="진료 결과 입력" GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <TextField fx:id="txtRegister" prefHeight="108.0" prefWidth="340.0" promptText="진료 결과 입력" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <font>
                   <Font size="15.0" />
                </font>
             </TextField>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="담당자" textAlignment="CENTER" wrappingWidth="92.109375">
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="담당자" textAlignment="CENTER" wrappingWidth="92.109375" GridPane.rowIndex="1">
                <font>
                   <Font size="17.0" />
                </font>
             </Text>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="병원명" textAlignment="CENTER" wrappingWidth="90.109375" GridPane.rowIndex="1">
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="병원명" textAlignment="CENTER" wrappingWidth="90.109375">
                <font>
                   <Font size="17.0" />
                </font>

@@ -10,12 +10,16 @@ public class PassString {
 		System.out.println("RECEIVE : " + serverData);
 	}
 	
-	public static void fingerData(String data) {
+	public static void setFingerData(String data) {
 		patientData = data;
 		System.out.println("현재 인증한 지문 데이터는 : " + data);
 	}
 	
 	public static String getReceiveData() {
 		return serverDataPass;
+	}
+	
+	public static String getFingerData() {
+		return patientData;
 	}
 }

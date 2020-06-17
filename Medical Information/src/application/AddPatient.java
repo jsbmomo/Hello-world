@@ -2,6 +2,8 @@ package application;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -60,8 +62,20 @@ public class AddPatient {
 			
 			// 서버로부터 응답을 받아 DB에 데이터가 성공적으로 저장되었는지 확인 
 			if(response[0].equals("Done")) {
-				status.setText("성공적으로 환자를 추가하였습니다.");
-				status.setTextFill(Color.rgb(21,117,84));
+				Alert alert = new Alert(AlertType.INFORMATION);
+				
+				alert.setTitle("Information");
+				alert.setWidth(400);
+				alert.setHeaderText(null);
+				alert.setContentText("성공적으로 환자를 추가하였습니다");
+				alert.showAndWait();
+				
+				txtname.clear();
+				txtage.clear();
+				txtsex.clear();
+				txtphone.clear();
+				txtsocial.clear();
+				txtjob.clear();
 			} else if(response[0].equals("Not")){
 				status.setText("이미 등록된 환자입니다.");
 				status.setTextFill(Color.rgb(210,39,30));

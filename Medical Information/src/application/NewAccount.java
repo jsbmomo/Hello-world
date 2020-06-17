@@ -2,13 +2,14 @@ package application;
 
 
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -70,15 +71,38 @@ public class NewAccount {
 			createJudge = server.receiveData();
 			System.out.println(createJudge);
 			String[] serverData = createJudge.split(" ");
-			if(serverData[0].equals("ID_Error")) { // 만약 DB내에 존재하는 아이디라면 
+			
+			
+			if(serverData[0].equals("ID_Error")) { // 만약 DB내에 존재하는 아이디라면
+				Alert alert = new Alert(AlertType.WARNING);
+				alert.setTitle("Information");
+				
+				alert.setContentText("이미 존재하는 ID입니다.");
+				alert.setHeaderText(null);
+				alert.showAndWait();
+
 				lblStatus.setText("이미 존재하는 ID입니다.");
 				lblStatus.setTextFill(Color.rgb(210,39,30));
 			} 
 			else if(serverData[0].equals("Qualification_Error")) { // 만약 DB내에 존재하는 자격번호라면
+				Alert alert = new Alert(AlertType.WARNING);
+				alert.setTitle("Information");
+				
+				alert.setContentText("이미 등록된 자격번호 입니다.");
+				alert.setHeaderText(null);
+				alert.showAndWait();
+				
 				lblStatus.setText("이미 등록된 의료자격 번호입니다.");
 				lblStatus.setTextFill(Color.rgb(210,39,30));				
 			}
 			else if(serverData[0].equals("Created")) { // 만약 정상적으로 DB에 추가되었다면
+				Alert alert = new Alert(AlertType.INFORMATION);
+				alert.setTitle("Information");
+				
+				alert.setContentText("계정을 생성하였습니다.");
+				alert.setHeaderText(null);
+				alert.showAndWait();
+				
 				lblStatus.setText("성공적으로 계정을 생성하였습니다!");
 				lblStatus.setTextFill(Color.rgb(21,117,84));
 				
