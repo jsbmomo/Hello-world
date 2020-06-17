@@ -1,5 +1,3 @@
-package server;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -17,41 +15,38 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import javafx.scene.control.SplitPane.Divider;
-
-
 public class Server {
 	public static void main(String[] args) {
-		new ServerProcessor(); // ServerProcessor °´Ã¼ »ı¼º
+		new ServerProcessor(); // ServerProcessor ê°ì²´ ìƒì„±
 	}
 }
 
 
 class ServerProcessor {
-	public ServerProcessor() { // ServerProcessro °´Ã¼°¡ »ı¼ºµÇÀÚ¸¶ÀÚ ¹Ù·Î ½ÇÇà
+	public ServerProcessor() { // ServerProcessro ê°ì²´ê°€ ìƒì„±ë˜ìë§ˆì ë°”ë¡œ ì‹¤í–‰
 		try {
-			ServerSocket server = new ServerSocket(3000); // ¼ÒÄ¹ ¼­¹ö Æ÷Æ® ÁöÁ¤ + ¼­¹ö ¼ÒÄÏ(°´Ã¼) »ı¼º
-			System.out.println("3000¹ø Æ÷Æ®¿¡¼­ Å¬¶óÀÌ¾ğÆ®ÀÇ Á¢¼ÓÀ» ±â´Ù¸³´Ï´Ù...");
+			ServerSocket server = new ServerSocket(3000); // ì†Œìº£ ì„œë²„ í¬íŠ¸ ì§€ì • + ì„œë²„ ì†Œì¼“(ê°ì²´) ìƒì„±
+			System.out.println("3000ë²ˆ í¬íŠ¸ì—ì„œ í´ë¼ì´ì–¸íŠ¸ì˜ ì ‘ì†ì„ ê¸°ë‹¤ë¦½ë‹ˆë‹¤...");
 			
-			while (true) { // clientÀÇ Á¢¼ÓÀ» °è¼Ó ¹ŞÀ¸¸é¼­ ¼­¹ö¸¦ °è¼Ó ½ÇÇàÇÏ´Â ±¸°£
+			while (true) { // clientì˜ ì ‘ì†ì„ ê³„ì† ë°›ìœ¼ë©´ì„œ ì„œë²„ë¥¼ ê³„ì† ì‹¤í–‰í•˜ëŠ” êµ¬ê°„
 				try {
-					// client¸¦ ¹Ş¾Ò´õ¶óµµ, ½º·¹µå¸¦ »ç¿ëÇß±â ¶§¹®¿¡, Ãß°¡·Î client¸¦ ¹ŞÀ» ¼ö ÀÖ´Ù.
-					Socket client = server.accept(); // ¼ÒÄÏ °´Ã¼¿¡ client Á¢¼ÓÀ» ¹Ş±â¸¦ ´ë±â 
+					// clientë¥¼ ë°›ì•˜ë”ë¼ë„, ìŠ¤ë ˆë“œë¥¼ ì‚¬ìš©í–ˆê¸° ë•Œë¬¸ì—, ì¶”ê°€ë¡œ clientë¥¼ ë°›ì„ ìˆ˜ ìˆë‹¤.
+					Socket client = server.accept(); // ì†Œì¼“ ê°ì²´ì— client ì ‘ì†ì„ ë°›ê¸°ë¥¼ ëŒ€ê¸° 
 					
-					ClientProcessor processor = new ClientProcessor(client); // Á¢¼ÓÇÑ client¸¦ ClientProcessorÀÇ ¸Ş¼ÒµåÀÇ ÀÎÀÚ·Î
-					processor.start(); // ClientProcessorÀÇ ½º·¹µå°¡ ½ÇÇàµÇµµ·Ï ÇÔ.(½º·¹µå´Â start¸¦ ÇØ¾ß ½ÃÀÛµÈ´Ù.)
+					ClientProcessor processor = new ClientProcessor(client); // ì ‘ì†í•œ clientë¥¼ ClientProcessorì˜ ë©”ì†Œë“œì˜ ì¸ìë¡œ
+					processor.start(); // ClientProcessorì˜ ìŠ¤ë ˆë“œê°€ ì‹¤í–‰ë˜ë„ë¡ í•¨.(ìŠ¤ë ˆë“œëŠ” startë¥¼ í•´ì•¼ ì‹œì‘ëœë‹¤.)
 					
-					System.out.println("Å¬¶óÀÌ¾ğÆ®°¡ Á¢±ÙÀ» ½ÃµµÇÕ´Ï´Ù : "+client.toString()); // Å¬¶óÀÌ¾ğÆ®°¡ ¿¬°áµÊ
-				} catch (IOException e) { e.printStackTrace(); } // ¿¹¿ÜÃ³¸®
+					System.out.println("í´ë¼ì´ì–¸íŠ¸ê°€ ì ‘ê·¼ì„ ì‹œë„í•©ë‹ˆë‹¤ : "+client.toString()); // í´ë¼ì´ì–¸íŠ¸ê°€ ì—°ê²°ë¨
+				} catch (IOException e) { e.printStackTrace(); } // ì˜ˆì™¸ì²˜ë¦¬
 			}
 		} catch (IOException e) { e.printStackTrace(); }
 	}
 	
 	
-	public class ClientProcessor extends Thread { // ¾²·¹µå·Î »ó¼Ó¹Ş¾Æ clientProcessor Å¬·¡½º¸¦ »ı¼º.
+	public class ClientProcessor extends Thread { // ì“°ë ˆë“œë¡œ ìƒì†ë°›ì•„ clientProcessor í´ë˜ìŠ¤ë¥¼ ìƒì„±.
 		private final Socket client;
 
-		// ¿¬°áÇÒ DB¿¡ ´ëÇÑ Á¤º¸ ÀÔ·Â
+		// ì—°ê²°í•  DBì— ëŒ€í•œ ì •ë³´ ì…ë ¥
 		private final String driver = "org.mariadb.jdbc.Driver";
 		private final String jdburl = "jdbc:mariadb://127.0.0.1:3306/hospital";
 		private final String dbId = "jeon";
@@ -59,54 +54,54 @@ class ServerProcessor {
 				
 		
 		public ClientProcessor(Socket client) {
-			this.client = client; // client¸¦ ClientProcessor Å¬·¡½ºÀÇ Socket¿¡ ÀúÀå  
+			this.client = client; // clientë¥¼ ClientProcessor í´ë˜ìŠ¤ì˜ Socketì— ì €ì¥  
 		}
 		
 	
 		@Override
-		public void run() { // ¾²·¹µå°¡ ½ÇÇàµÇ´Â ºÎºì
+		public void run() { // ì“°ë ˆë“œê°€ ì‹¤í–‰ë˜ëŠ” ë¶€ë¸
 			try {
-				// client¿¡¼­ µ¥ÀÌÅÍ¸¦ ¹Ş¾Æ¿À±â À§ÇÑ InputStream ¼¼ÆÃ\
-				// InputStream¸¸ ÀÌ¿ëÇØµµ client°¡ º¸³½ µ¥ÀÌÅÍ¸¦ ¹ŞÀ» ¼ö ÀÖÁö¸¸ byte·Î ¹Ş¾Æ¿À±â ¶§¹®¿¡ 
+				// clientì—ì„œ ë°ì´í„°ë¥¼ ë°›ì•„ì˜¤ê¸° ìœ„í•œ InputStream ì„¸íŒ…\
+				// InputStreamë§Œ ì´ìš©í•´ë„ clientê°€ ë³´ë‚¸ ë°ì´í„°ë¥¼ ë°›ì„ ìˆ˜ ìˆì§€ë§Œ byteë¡œ ë°›ì•„ì˜¤ê¸° ë•Œë¬¸ì— 
 				InputStream baseInputStream = client.getInputStream();
-				// InputStreamReader¸¦ »ç¿ëÇÏ¿© ¹®ÀÚ¿­ °ªÀ¸·Î Æí¸®ÇÏ°Ô Ã³¸®ÇÒ ¼ö ÀÖ°Ô ÇÏ¸ç
+				// InputStreamReaderë¥¼ ì‚¬ìš©í•˜ì—¬ ë¬¸ìì—´ ê°’ìœ¼ë¡œ í¸ë¦¬í•˜ê²Œ ì²˜ë¦¬í•  ìˆ˜ ìˆê²Œ í•˜ë©°
 				InputStreamReader inputStreamReader = new InputStreamReader(baseInputStream);
-				// BufferedReader¸¦ ÀÌ¿ëÇØ ÇÑÁÙ ´ÜÀ§·Î ÇÑ²¨¹ø¿¡ ÀĞ¾î ¿Ã ¼ö ÀÖ°Ô ÇÕ´Ï´Ù.
+				// BufferedReaderë¥¼ ì´ìš©í•´ í•œì¤„ ë‹¨ìœ„ë¡œ í•œêº¼ë²ˆì— ì½ì–´ ì˜¬ ìˆ˜ ìˆê²Œ í•©ë‹ˆë‹¤.
 				BufferedReader prettyInput = new BufferedReader(inputStreamReader);
 				
-				// 1:n Åë½Å Å×½ºÆ®¿ë ÄÚµå(Å¬¶óÀÌ¾ğÆ®¿¡°Ô Ãâ·Â)
+				// 1:n í†µì‹  í…ŒìŠ¤íŠ¸ìš© ì½”ë“œ(í´ë¼ì´ì–¸íŠ¸ì—ê²Œ ì¶œë ¥)
 				/*for (int sec = 0; sec <= 30; sec++) {
 					try {
-						prettyOutput.write("Seconds: "+sec+"\n"); // client¿¡°Ô Ãâ·ÂÇÒ ¹®ÀÚ¿­
-						prettyOutput.flush(); // ¹öÆÛ¸¦ ºñ¿ì¸é¼­ client¿¡°Ô ¹®ÀÚ¿­ Àü¼Û 
+						prettyOutput.write("Seconds: "+sec+"\n"); // clientì—ê²Œ ì¶œë ¥í•  ë¬¸ìì—´
+						prettyOutput.flush(); // ë²„í¼ë¥¼ ë¹„ìš°ë©´ì„œ clientì—ê²Œ ë¬¸ìì—´ ì „ì†¡ 
 						
 						System.out.println("Sent message to "+client.toString()+": Seconds: "+sec);
 						
-						Thread.sleep(1000); // ½º·¹µå°¡ 1ÃÊ ¸ØÃã.
+						Thread.sleep(1000); // ìŠ¤ë ˆë“œê°€ 1ì´ˆ ë©ˆì¶¤.
 						
-					// ½º·¹µå°¡ ¸ØÃè´Ù°¡ ´Ù½Ã ½ÇÇàÇÒ¶§ Interrupt¸¦ ¹ß»ı½ÃÅ°±â¿¡
-					// ÀÎÅÍ·´Æ® ¹ß»ı ½Ã »ı±â´Â ¿¹¿ÜÀÎ InturrptedExceptionÀ» Ã³¸®ÇØÁÖ±â À§ÇØ »ç¿ë
+					// ìŠ¤ë ˆë“œê°€ ë©ˆì·„ë‹¤ê°€ ë‹¤ì‹œ ì‹¤í–‰í• ë•Œ Interruptë¥¼ ë°œìƒì‹œí‚¤ê¸°ì—
+					// ì¸í„°ëŸ½íŠ¸ ë°œìƒ ì‹œ ìƒê¸°ëŠ” ì˜ˆì™¸ì¸ InturrptedExceptionì„ ì²˜ë¦¬í•´ì£¼ê¸° ìœ„í•´ ì‚¬ìš©
 					} catch (InterruptedException e) {} 
 				}*/
 				
-				String request = ""; // client·Î ºÎÅÍ ¹ŞÀ» ¹®ÀÚ(data)¸¦ ÀúÀåÇÒ ¹®ÀÚ¿­
-				char read; // client°¡ º¸³½ µ¥ÀÌÅÍ¸¦ ÇÑ ±ÛÀÚ¾¿ ÀĞÀ½
+				String request = ""; // clientë¡œ ë¶€í„° ë°›ì„ ë¬¸ì(data)ë¥¼ ì €ì¥í•  ë¬¸ìì—´
+				char read; // clientê°€ ë³´ë‚¸ ë°ì´í„°ë¥¼ í•œ ê¸€ìì”© ì½ìŒ
 
-				// client¿Í ¿¬°áµÇ¾î ÀÖÀ»µ¿¾È ¹İº¹
-				// client¿Í ¿¬°áÀÌ ²÷¾îÁö¸é ¹İº¹¹® Á¾·á 
-				while ((read = (char)prettyInput.read()) != -1) { // read()°¡ ¿¬°áÀÌ ²÷¾îÁö¸é -1¸¦ ¹İÈ¯   
-					if (read == '\0') { // ÇÑ ±ÛÀÚ¾¿ ÀĞ¾úÀ» ¶§ client°¡ º¸³½ µ¥ÀÌÅÍ°¡ '\0'ÀÌ¸é   
+				// clientì™€ ì—°ê²°ë˜ì–´ ìˆì„ë™ì•ˆ ë°˜ë³µ
+				// clientì™€ ì—°ê²°ì´ ëŠì–´ì§€ë©´ ë°˜ë³µë¬¸ ì¢…ë£Œ 
+				while ((read = (char)prettyInput.read()) != -1) { // read()ê°€ ì—°ê²°ì´ ëŠì–´ì§€ë©´ -1ë¥¼ ë°˜í™˜   
+					if (read == '\0') { // í•œ ê¸€ìì”© ì½ì—ˆì„ ë•Œ clientê°€ ë³´ë‚¸ ë°ì´í„°ê°€ '\0'ì´ë©´   
 						System.out.println(request);
 						String[] ClientData = request.split("/"); 
 						
 						if(ClientData[0].equals("User")) {
-							ReceiveUserData(ClientData[1]); // ·Î±×ÀÎÀ» À§ÇÑ µ¥ÀÌÅÍ ÀÏ°æ¿ì 
+							ReceiveUserData(ClientData[1]); // ë¡œê·¸ì¸ì„ ìœ„í•œ ë°ì´í„° ì¼ê²½ìš° 
 						}
 						else if(ClientData[0].equals("Finger")) {
-							ReceiveFingeData(ClientData[1]); // Áö¹®µ¥ÀÌÅÍÀÏ °æ¿ì 
+							ReceiveFingeData(ClientData[1]); // ì§€ë¬¸ë°ì´í„°ì¼ ê²½ìš° 
 						}
 						else if(ClientData[0].equals("NewAcount")){
-							ReceiveNewAccount(ClientData[1]); // »õ·Î °èÁ¤À» »ı¼ºÇÏ°íÀÚ ÇÏ´Â °æ¿ì 
+							ReceiveNewAccount(ClientData[1]); // ìƒˆë¡œ ê³„ì •ì„ ìƒì„±í•˜ê³ ì í•˜ëŠ” ê²½ìš° 
 						} 
 						else if(ClientData[0].equals("Patient")) {
 							NewPatientData(ClientData[1]);
@@ -115,23 +110,23 @@ class ServerProcessor {
 							NewDiagnosis(ClientData[1]);
 						} 
 						else {
-							System.out.println("Àß¸øµÈ °ªÀ» ¹Ş¾Ò½À´Ï´Ù");	
+							System.out.println("ì˜ëª»ëœ ê°’ì„ ë°›ì•˜ìŠµë‹ˆë‹¤");	
 						}
 					} else 
-						request += read; // '\0'À» ¸¸³ª±â Àü±îÁø read º¯¼ö·Î ÇÑ ¹®ÀÚ¾¿ ÀĞÀº µ¥ÀÌÅÍ¸¦ request¿¡ ÀúÀå
+						request += read; // '\0'ì„ ë§Œë‚˜ê¸° ì „ê¹Œì§„ read ë³€ìˆ˜ë¡œ í•œ ë¬¸ìì”© ì½ì€ ë°ì´í„°ë¥¼ requestì— ì €ì¥
 				}
 				System.out.println("Complited");
-				//client.close(); // client¿¡ ´ëÇÑ ÀÛ¾÷ÀÌ ³¡³´À¸¹Ç·Î ¼ÒÄÏÀ» ´İÀ½.
+				//client.close(); // clientì— ëŒ€í•œ ì‘ì—…ì´ ëë‚«ìœ¼ë¯€ë¡œ ì†Œì¼“ì„ ë‹«ìŒ.
 			} catch (IOException e) { e.printStackTrace(); }
 		}
 		
 		
 		
-		// ================»õ·Î¿î Áø·á±â·ÏÀ» DB¿¡ Ãß°¡ 
+		// ================ìƒˆë¡œìš´ ì§„ë£Œê¸°ë¡ì„ DBì— ì¶”ê°€ 
 		public void NewDiagnosis(String ClientData) {
 			String[] newInformation = ClientData.split("#");
 			
-			System.out.print("µ¥ÀÌÅÍ Ãß°¡ : ");
+			System.out.print("ë°ì´í„° ì¶”ê°€ : ");
 			for(String i : newInformation) {
 				System.out.print(i + " ");
 			}
@@ -162,7 +157,7 @@ class ServerProcessor {
 				sendResponseToClient("NewData");
 				
 			}catch(ClassNotFoundException e) {
-				System.out.println("ÇØ´ç Å×ÀÌºíÀ» Ã£À» ¼ö ¾ø½À´Ï´Ù.");
+				System.out.println("í•´ë‹¹ í…Œì´ë¸”ì„ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
 			}catch(SQLException e) {
 				e.printStackTrace();
 			}catch(Exception e) {
@@ -179,11 +174,11 @@ class ServerProcessor {
 		}
 		
 		
-		// ================Å¬¶óÀÌ¾ğÆ®·Î°¡ Ãß°¡·Î È¯ÀÚ¸¦ µî·ÏÇÒ °æ¿ì ½ÇÇà 
+		// ================í´ë¼ì´ì–¸íŠ¸ë¡œê°€ ì¶”ê°€ë¡œ í™˜ìë¥¼ ë“±ë¡í•  ê²½ìš° ì‹¤í–‰ 
 		public void NewPatientData(String ClientData) {
 			String[] patientInformation = ClientData.split(" ");
 			
-			System.out.print("È¯ÀÚ¸¦ Ãß°¡ÇÕ´Ï´Ù : ");
+			System.out.print("í™˜ìë¥¼ ì¶”ê°€í•©ë‹ˆë‹¤ : ");
 			for(String i : patientInformation) {
 				System.out.print(i + " ");
 			}
@@ -204,24 +199,24 @@ class ServerProcessor {
 				pstmt.setString(1, patientInformation[3]);
 				rs = pstmt.executeQuery();
 				
-				// Äõ¸®¹®À» ½ÇÇàÇÏ¿© ÇØ´ç ÁÖ¹Îµî·Ï¹øÈ£°¡ Á¸ÀçÇÑ´Ù¸é "True"
+				// ì¿¼ë¦¬ë¬¸ì„ ì‹¤í–‰í•˜ì—¬ í•´ë‹¹ ì£¼ë¯¼ë“±ë¡ë²ˆí˜¸ê°€ ì¡´ì¬í•œë‹¤ë©´ "True"
 				if(rs.next()) { 
 					sendResponseToClient("Not making");
 				} else {
 					pstmt = con.prepareStatement(sql2);
-					pstmt.setString(1, patientInformation[0]); // ÀÌ¸§ ÀÔ·Â
-					pstmt.setString(2, patientInformation[1]); // ¼ºº° ÀÔ·Â
-					pstmt.setString(3, patientInformation[2]); // ³ªÀÌ ÀÔ·Â
-					pstmt.setString(4, patientInformation[3]); // ÁÖ¹Îµî·Ï¹øÈ£ ÀÔ·Â
-					pstmt.setString(5, patientInformation[4]); // ÈŞ´ëÀüÈ­¹øÈ£ ÀÔ·Â
-					pstmt.setString(6, patientInformation[5]); // Á÷¾÷ ÀÔ·Â
+					pstmt.setString(1, patientInformation[0]); // ì´ë¦„ ì…ë ¥
+					pstmt.setString(2, patientInformation[1]); // ì„±ë³„ ì…ë ¥
+					pstmt.setString(3, patientInformation[2]); // ë‚˜ì´ ì…ë ¥
+					pstmt.setString(4, patientInformation[3]); // ì£¼ë¯¼ë“±ë¡ë²ˆí˜¸ ì…ë ¥
+					pstmt.setString(5, patientInformation[4]); // íœ´ëŒ€ì „í™”ë²ˆí˜¸ ì…ë ¥
+					pstmt.setString(6, patientInformation[5]); // ì§ì—… ì…ë ¥
 					
 					pstmt.executeUpdate();
 					
 					sendResponseToClient("Done adding");
 				}
 			} catch(ClassNotFoundException e) {
-				System.out.println("ÇØ´ç Å¬·¡½º¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù.");
+				System.out.println("í•´ë‹¹ í´ë˜ìŠ¤ë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
 				e.printStackTrace();
 			} catch(SQLException e) {
 				e.printStackTrace();
@@ -239,44 +234,44 @@ class ServerProcessor {
 		}
 		
 		
-		// ================Å¬¶óÀÌ¾ğÆ®·ÎºÎÅÍ Áö¹® µ¥ÀÌÅÍ¸¦ ¹Ş¾ÒÀ» °æ¿ì ½ÇÇà
+		// ================í´ë¼ì´ì–¸íŠ¸ë¡œë¶€í„° ì§€ë¬¸ ë°ì´í„°ë¥¼ ë°›ì•˜ì„ ê²½ìš° ì‹¤í–‰
 		public void ReceiveFingeData(String ClientData) {
 			try {
 				 
 				Connection con  = null; 
-				ResultSet rs = null; // ÃÊ±â È¯ÀÚÀÇ °³ÀÎÁ¤º¸¸¦ °¡Á®¿À±â À§ÇÑ °´Ã¼µé
+				ResultSet rs = null; // ì´ˆê¸° í™˜ìì˜ ê°œì¸ì •ë³´ë¥¼ ê°€ì ¸ì˜¤ê¸° ìœ„í•œ ê°ì²´ë“¤
 				PreparedStatement pstmt = null;
 				ResultSetMetaData rsmd = null;
 
 				String sql = "select * from patient_info where id = ?";
 				String sql2 = "select * from patient_data where id = ?";
 				
-				int number = 0; // DBÀÇ ¿­ÀÇ °³¼ö¸¦ ÀúÀåÇÒ º¯¼ö 
+				int number = 0; // DBì˜ ì—´ì˜ ê°œìˆ˜ë¥¼ ì €ì¥í•  ë³€ìˆ˜ 
 				 
 				try {
 					Class.forName(driver);
 					 
 					con = DriverManager.getConnection(jdburl, dbId, dbPw);
 					 
-					 // È¯ÀÚÀÇ °³ÀÎÁ¤º¸¸¦ °¡Á®¿À±â À§ÇØ ¼öÇà 
-					pstmt = con.prepareStatement(sql); // ¸ÕÀú spt¹®À» °¡Á®¿À°í 
-					pstmt.setString(1, ClientData); // ?( = ÆÄ¶ó¹ÌÅÍ) ¿¡ µé¾î°¥ °ª ÁöÁ¤   
-					rs = pstmt.executeQuery(); // sql ¹® ½ÇÇàÇÏ¸ç °ª ÀúÀå 
+					 // í™˜ìì˜ ê°œì¸ì •ë³´ë¥¼ ê°€ì ¸ì˜¤ê¸° ìœ„í•´ ìˆ˜í–‰ 
+					pstmt = con.prepareStatement(sql); // ë¨¼ì € sptë¬¸ì„ ê°€ì ¸ì˜¤ê³  
+					pstmt.setString(1, ClientData); // ?( = íŒŒë¼ë¯¸í„°) ì— ë“¤ì–´ê°ˆ ê°’ ì§€ì •   
+					rs = pstmt.executeQuery(); // sql ë¬¸ ì‹¤í–‰í•˜ë©° ê°’ ì €ì¥ 
 					
-					rsmd = rs.getMetaData(); // ÄÃ·³ÀÇ ÃÑ µ¥ÀÌÅÍ ¼ö¸¦ ¾Ë±â À§ÇØ »ç¿ë 
-					number = rsmd.getColumnCount(); // µ¥ÀÌÅÍ ±æÀÌ¸¸Å­ °¡Á®¿Í ÀúÀå 
+					rsmd = rs.getMetaData(); // ì»¬ëŸ¼ì˜ ì´ ë°ì´í„° ìˆ˜ë¥¼ ì•Œê¸° ìœ„í•´ ì‚¬ìš© 
+					number = rsmd.getColumnCount(); // ë°ì´í„° ê¸¸ì´ë§Œí¼ ê°€ì ¸ì™€ ì €ì¥ 
 					
-					// ¸¸¾à Å¬¶óÀÌ¾ğÆ®°¡ ¿äÃ»ÇÑ µ¥ÀÌÅÍ°¡ ÀÖ´Ù¸é 
+					// ë§Œì•½ í´ë¼ì´ì–¸íŠ¸ê°€ ìš”ì²­í•œ ë°ì´í„°ê°€ ìˆë‹¤ë©´ 
 					if(rs.next()) {
 						
-						String result = "exist/"; // Å¬¶óÀÌ¾ğÆ®¿¡°Ô Àü¼ÛÇÒ ¹®ÀÚ¿­ ÀúÀå 
+						String result = "exist/"; // í´ë¼ì´ì–¸íŠ¸ì—ê²Œ ì „ì†¡í•  ë¬¸ìì—´ ì €ì¥ 
 
 						for(int i = 2; i <= number; i++) {
-							result += rs.getNString(i); // DB³»¿ë¿¡¼­ i¹øÂ° ÇàÀÇ ³»¿ëÀ» °¡Á®¿È 
-							result += "#"; // °¢ µ¥ÀÌÅÍ¸¦ ±¸ºĞÇÏ±âÀ§ÇÑ ±¸ºĞÀÚ 
+							result += rs.getNString(i); // DBë‚´ìš©ì—ì„œ ië²ˆì§¸ í–‰ì˜ ë‚´ìš©ì„ ê°€ì ¸ì˜´ 
+							result += "#"; // ê° ë°ì´í„°ë¥¼ êµ¬ë¶„í•˜ê¸°ìœ„í•œ êµ¬ë¶„ì 
 						}
 						
-						// È¯ÀÚÀÇ Áø·á ±â·ÏÀ» °¡Á®¿À±â À§ÇØ À§ÀÇ °úÁ¤ ÇÑ¹ø ´õ ¼öÇà 
+						// í™˜ìì˜ ì§„ë£Œ ê¸°ë¡ì„ ê°€ì ¸ì˜¤ê¸° ìœ„í•´ ìœ„ì˜ ê³¼ì • í•œë²ˆ ë” ìˆ˜í–‰ 
 						pstmt = con.prepareStatement(sql2);
 						pstmt.setString(1, ClientData);
 						rs = pstmt.executeQuery();
@@ -285,25 +280,25 @@ class ServerProcessor {
 						number = rsmd.getColumnCount();
 						
 						while(rs.next()) {
-						//if(rs.next()) { // È¯ÀÚÀÇ Áø·á±â·ÏÀÌ Á¸ÀçÇÑ´Ù¸é µ¥ÀÌÅÍ¸¦ °¡Á®¿È 
+						//if(rs.next()) { // í™˜ìì˜ ì§„ë£Œê¸°ë¡ì´ ì¡´ì¬í•œë‹¤ë©´ ë°ì´í„°ë¥¼ ê°€ì ¸ì˜´ 
 							for(int i = 3; i <= number; i++) {
 								result += rs.getNString(i);
 								result += "#";
 							}
-							result = result.substring(0, result.length() - 1); // ¸¶Áö¸·¿¡ ºÙÀº # Á¦°Å 
+							result = result.substring(0, result.length() - 1); // ë§ˆì§€ë§‰ì— ë¶™ì€ # ì œê±° 
 							result += "&";
 						}
-						result = result.substring(0, result.length() - 1); // ¸¶Áö¸·¿¡ ºÙÀº & Á¦°Å 
+						result = result.substring(0, result.length() - 1); // ë§ˆì§€ë§‰ì— ë¶™ì€ & ì œê±° 
 						System.out.println(result);
 						
 						sendResponseToClient(result);
 					} else {
-						System.out.println("ÇØ´ç µ¥ÀÌÅÍ°¡ Á¸ÀçÇÏÁö ¾Ê½À´Ï´Ù.");
+						System.out.println("í•´ë‹¹ ë°ì´í„°ê°€ ì¡´ì¬í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.");
 						sendResponseToClient("failed");
 					}
 					 
 				 }catch(ClassNotFoundException e) {
-					 System.out.println("ÇØ´ç Å¬·¡½º¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù.");
+					 System.out.println("í•´ë‹¹ í´ë˜ìŠ¤ë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
 				 }catch(SQLException e){
 					 e.printStackTrace();
 				 }finally {
@@ -322,11 +317,11 @@ class ServerProcessor {
 		}
 		
 		
-		// ================ »õ·Î »ı¼º°¡´ÉÇÑ °èÁ¤ÀÎÁö ÆÇ´Ü 
+		// ================ ìƒˆë¡œ ìƒì„±ê°€ëŠ¥í•œ ê³„ì •ì¸ì§€ íŒë‹¨ 
 		public void ReceiveNewAccount(String ClientData) {
 			String[] newClient = ClientData.split(" ");
 			
-			System.out.print("Client°¡ »õ·Î »ı¼ºÇÏ·Á´Â °èÁ¤ Á¤º¸ : ");
+			System.out.print("Clientê°€ ìƒˆë¡œ ìƒì„±í•˜ë ¤ëŠ” ê³„ì • ì •ë³´ : ");
 			for (String index : newClient) {
 				System.out.print(index + "  ");	
 			}
@@ -334,22 +329,22 @@ class ServerProcessor {
 			
 			Connection con = null;
 
-			ResultSet rs = null; // ÇØ´çµ¥ÀÌÅÍ°¡ DB³»¿¡ Á¸ÀçÇÏ´ÂÁö true, false ¹İÈ¯ 
+			ResultSet rs = null; // í•´ë‹¹ë°ì´í„°ê°€ DBë‚´ì— ì¡´ì¬í•˜ëŠ”ì§€ true, false ë°˜í™˜ 
 			ResultSet rs2 = null;
 			PreparedStatement pstmt = null; 
 			PreparedStatement pstmt2 = null;
 			PreparedStatement pstmt3 = null;
 
-			String sql = ""; // ¾ÆÀÌµğ°¡ ÀÌ¹Ì Á¸ÀçÇÏ´ÂÁö ÆÄ¾ÇÇÒ SELECT ¹®
-			String sql2 = ""; // ÀÚ°İ ¹øÈ£°¡ ÀÌ¹Ì Á¸ÀçÇÏ´ÂÁö ÆÄ¾ÇÇÒ SELECT ¹®
-			String sql3 = ""; // µî·ÏµÇÁö ¾ÊÀº Á¤º¸¶ó¸é INSERT·Î DB¿¡ µî·Ï 
+			String sql = ""; // ì•„ì´ë””ê°€ ì´ë¯¸ ì¡´ì¬í•˜ëŠ”ì§€ íŒŒì•…í•  SELECT ë¬¸
+			String sql2 = ""; // ìê²© ë²ˆí˜¸ê°€ ì´ë¯¸ ì¡´ì¬í•˜ëŠ”ì§€ íŒŒì•…í•  SELECT ë¬¸
+			String sql3 = ""; // ë“±ë¡ë˜ì§€ ì•Šì€ ì •ë³´ë¼ë©´ INSERTë¡œ DBì— ë“±ë¡ 
 	
-			// DB¿Í ¿¬°áÇÏ¿© select ¹®À¸·Î ÇØ´ç id ¶Ç´Â ÀÚ°İ¹øÈ£°¡ µî·ÏµÇ¾îÀÖ´ÂÁö È®ÀÎ
+			// DBì™€ ì—°ê²°í•˜ì—¬ select ë¬¸ìœ¼ë¡œ í•´ë‹¹ id ë˜ëŠ” ìê²©ë²ˆí˜¸ê°€ ë“±ë¡ë˜ì–´ìˆëŠ”ì§€ í™•ì¸
 			try{  
 				Class.forName(driver);
 				
 				con = DriverManager.getConnection(jdburl, dbId, dbPw);
-				System.out.println("DB¿¡ Á¢¼ÓÇÏ¿´½À´Ï´Ù.");
+				System.out.println("DBì— ì ‘ì†í•˜ì˜€ìŠµë‹ˆë‹¤.");
 				
 				sql = "select user_id from user_info where user_id = ?";
 				sql2 = "select user_number from user_info where user_number = ?";
@@ -361,30 +356,30 @@ class ServerProcessor {
 				System.out.println(pstmt);
 				pstmt2.setString(1, newClient[2]);
 				
-				// ÀÌ¹Ì ¿©±â¼­ Äõ¸®¹®À» ½ÇÇàÇÏ¿© ÇØ´ç id°¡ DB³»¿¡ Á¸ÀçÇÏ´ÂÁö ÆÇ´ÜÇÏ¿©, true false¸¦ ¹İÈ¯ÇÔ
+				// ì´ë¯¸ ì—¬ê¸°ì„œ ì¿¼ë¦¬ë¬¸ì„ ì‹¤í–‰í•˜ì—¬ í•´ë‹¹ idê°€ DBë‚´ì— ì¡´ì¬í•˜ëŠ”ì§€ íŒë‹¨í•˜ì—¬, true falseë¥¼ ë°˜í™˜í•¨
 				rs = pstmt.executeQuery(); 
-				// ¿©±â¼­ Äõ¸®¹®À» ½ÇÇàÇÏ¿© ÇØ´ç ÀÚ°İ¹øÈ£°¡ Á¸ÀçÇÏ´ÂÁö ÆÇ´ÜÇÏ¿© true,false¸¦ ¹İÈ¯ 
+				// ì—¬ê¸°ì„œ ì¿¼ë¦¬ë¬¸ì„ ì‹¤í–‰í•˜ì—¬ í•´ë‹¹ ìê²©ë²ˆí˜¸ê°€ ì¡´ì¬í•˜ëŠ”ì§€ íŒë‹¨í•˜ì—¬ true,falseë¥¼ ë°˜í™˜ 
 				rs2 = pstmt2.executeQuery();
 	
-				// ±×³É rs¸¦ Ãâ·ÂÇÏ¸é ¸Ş¸ğ¸® ÁÖ¼Ò(?)°¡ ¶á´Ù. .next() ÅëÇØ true / false °ª ÆÄ¾Ç°¡´É 
+				// ê·¸ëƒ¥ rsë¥¼ ì¶œë ¥í•˜ë©´ ë©”ëª¨ë¦¬ ì£¼ì†Œ(?)ê°€ ëœ¬ë‹¤. .next() í†µí•´ true / false ê°’ íŒŒì•…ê°€ëŠ¥ 
 				//System.out.println(rs.next() + "     "  + rs2.next());
 				try {
-					System.out.println("DB ³»¿ë°ú ºñ±³Áß...");
+					System.out.println("DB ë‚´ìš©ê³¼ ë¹„êµì¤‘...");
 					if(rs.next()) {
-						System.out.println("DB : ÀÌ¹Ì Á¸ÀçÇÏ´Â ¾ÆÀÌµğ");
+						System.out.println("DB : ì´ë¯¸ ì¡´ì¬í•˜ëŠ” ì•„ì´ë””");
 						sendResponseToClient("ID_Error");
 					}else if(rs2.next()) {
-						System.out.println("DB : ÀÌ¹Ì Á¸ÀçÇÏ´Â ÀÚ°İ ¹øÈ£");
+						System.out.println("DB : ì´ë¯¸ ì¡´ì¬í•˜ëŠ” ìê²© ë²ˆí˜¸");
 						sendResponseToClient("Qualification_Error");
 					} else {
-						System.out.println("DB : »õ·Î Ãß°¡ÇÒ µ¥ÀÌÅÍ!");
+						System.out.println("DB : ìƒˆë¡œ ì¶”ê°€í•  ë°ì´í„°!");
 						sql3 = "insert into user_info values(?,?,?,?,?)";
 						pstmt3 = con.prepareStatement(sql3);
-						pstmt3.setString(1,  newClient[0]); // ID ÀÔ·Â
-						pstmt3.setString(2,  newClient[1]); // PW ÀÔ·Â
-						pstmt3.setString(3,  newClient[4]); // ÀüÈ­¹øÈ£ ÀÔ·Â
-						pstmt3.setString(4,  newClient[3]); // ÀÌ¸§ ÀÔ·Â
-						pstmt3.setString(5,  newClient[2]); // ÀÚ°İ¹øÈ£ ÀÔ·Â 
+						pstmt3.setString(1,  newClient[0]); // ID ì…ë ¥
+						pstmt3.setString(2,  newClient[1]); // PW ì…ë ¥
+						pstmt3.setString(3,  newClient[4]); // ì „í™”ë²ˆí˜¸ ì…ë ¥
+						pstmt3.setString(4,  newClient[3]); // ì´ë¦„ ì…ë ¥
+						pstmt3.setString(5,  newClient[2]); // ìê²©ë²ˆí˜¸ ì…ë ¥ 
 						
 						pstmt3.executeUpdate();
 						
@@ -395,7 +390,7 @@ class ServerProcessor {
 				}
 				
 			}catch(ClassNotFoundException e) {
-				System.out.println("ÇØ´ç Å¬·¡½º¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù.");
+				System.out.println("í•´ë‹¹ í´ë˜ìŠ¤ë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
 			}catch(SQLException e) {
 				e.printStackTrace();
 			}finally {
@@ -410,28 +405,28 @@ class ServerProcessor {
 		}
 		
 		
-		// µî·ÏµÈ »ç¿ëÀÚÀÎÁö È®ÀÎÇÏ´Â ºÎºĞ( µî·ÏµÈ »ç¿ëÀÚ¸é »ç¿ëÀÚ¿¡°Ô ¹İÀÀ )
-		// ================ Å¬¶óÀÌ¾ğÆ®ÂÊ¿¡¼­ ¼­¹ö·ÎºÎÅÍ ÀÀ´äÀ» ¹Ş¾Æ »ç¿ëÀÚ ±¸ºĞ		
+		// ë“±ë¡ëœ ì‚¬ìš©ìì¸ì§€ í™•ì¸í•˜ëŠ” ë¶€ë¶„( ë“±ë¡ëœ ì‚¬ìš©ìë©´ ì‚¬ìš©ìì—ê²Œ ë°˜ì‘ )
+		// ================ í´ë¼ì´ì–¸íŠ¸ìª½ì—ì„œ ì„œë²„ë¡œë¶€í„° ì‘ë‹µì„ ë°›ì•„ ì‚¬ìš©ì êµ¬ë¶„		
 		public void ReceiveUserData(String ClientData) {
 			String[] userData = ClientData.split(" ", 2);
 			boolean loginDB = false;
-			System.out.println("Á¢¼ÓÀ» ½ÃµµÇÏ´Â ClientÀÇ ID¿Í PW : " + userData[0]+ " | " + userData[1]);
+			System.out.println("ì ‘ì†ì„ ì‹œë„í•˜ëŠ” Clientì˜ IDì™€ PW : " + userData[0]+ " | " + userData[1]);
 			Connection con = null;
 			Statement stmt = null;
 			ResultSet rs = null;
 			
-			// DB¿¡ Á¢¼ÓÇÏ¿© ÇØ´ç ID¿Í ºñ¹Ğ¹øÈ£°¡ ÀÖ´Â Áö È®ÀÎ ÈÄ ÀÌ»óÀÌ ¾øÀ¸¸é access(Á¢±Ù Çã°¡)
+			// DBì— ì ‘ì†í•˜ì—¬ í•´ë‹¹ IDì™€ ë¹„ë°€ë²ˆí˜¸ê°€ ìˆëŠ” ì§€ í™•ì¸ í›„ ì´ìƒì´ ì—†ìœ¼ë©´ access(ì ‘ê·¼ í—ˆê°€)
 			try {  
 				
-				// DB¿¡ Á¢¼ÓÇÏ´Â ÄÚµå. ½ÇÁúÀûÀ¸·Î »ç¿ëÀÚ°¡ µî·ÏµÇ¾î ÀÖ´ÂÁö È®ÀÎ  -----------------------------
+				// DBì— ì ‘ì†í•˜ëŠ” ì½”ë“œ. ì‹¤ì§ˆì ìœ¼ë¡œ ì‚¬ìš©ìê°€ ë“±ë¡ë˜ì–´ ìˆëŠ”ì§€ í™•ì¸  -----------------------------
 				try{ 
 					Class.forName(driver);
 					
 					con = DriverManager.getConnection(jdburl, dbId, dbPw);
-					System.out.println("DB¿¡ Á¢¼ÓÇÏ¿´½À´Ï´Ù.");
-					stmt = con.createStatement(); // Äõ¸® ¼öÇàÀ» À§ÇÑ statement °´Ã¼ »ı¼º 
+					System.out.println("DBì— ì ‘ì†í•˜ì˜€ìŠµë‹ˆë‹¤.");
+					stmt = con.createStatement(); // ì¿¼ë¦¬ ìˆ˜í–‰ì„ ìœ„í•œ statement ê°ì²´ ìƒì„± 
 					
-					// user_info Å×ÀÌºíÀÇ user_id / user_pw¸¸ °¡Á®¿À´Â sql¹® 
+					// user_info í…Œì´ë¸”ì˜ user_id / user_pwë§Œ ê°€ì ¸ì˜¤ëŠ” sqlë¬¸ 
 					String sql = "select * from USER_INFO"; 
 					
 					rs = stmt.executeQuery(sql);
@@ -446,7 +441,7 @@ class ServerProcessor {
 					
 					con.close();
 				} catch(ClassNotFoundException e) {
-					System.out.println("ÇØ´ç Å¬·¡½º¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù.");
+					System.out.println("í•´ë‹¹ í´ë˜ìŠ¤ë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
 				} catch (SQLException e) {
 					e.printStackTrace();
 				} finally{
@@ -458,12 +453,12 @@ class ServerProcessor {
 						e.printStackTrace();
 					}
 				}
-				// DB ÄÚµå°¡ ³¡³ª´Â ºÎºĞ -----------------------------
+				// DB ì½”ë“œê°€ ëë‚˜ëŠ” ë¶€ë¶„ -----------------------------
 				
 				if(loginDB) {
-					sendResponseToClient("access"); // client¿¡°Ô ¸Ş¼¼Áö¸¦ º¸³¾ ¸Ş¼Òµå È£Ãâ 
+					sendResponseToClient("access"); // clientì—ê²Œ ë©”ì„¸ì§€ë¥¼ ë³´ë‚¼ ë©”ì†Œë“œ í˜¸ì¶œ 
 				} else {
-					sendResponseToClient("failed"); // client¿¡°Ô ¸Ş¼¼Áö¸¦ º¸³¾ ¸Ş¼Òµå È£Ãâ
+					sendResponseToClient("failed"); // clientì—ê²Œ ë©”ì„¸ì§€ë¥¼ ë³´ë‚¼ ë©”ì†Œë“œ í˜¸ì¶œ
 				}
 
 			} catch (IOException e) {
@@ -472,34 +467,34 @@ class ServerProcessor {
 		}
 		
 		
-		//================µ¥ÀÌÅÍ¸¦ Å¬¶óÀÌ¾ğÆ®¿¡°Ô ´Ù½Ã º¸³»±â À§ÇÑ ÄÚµå ÀÛ¼º 
+		//================ë°ì´í„°ë¥¼ í´ë¼ì´ì–¸íŠ¸ì—ê²Œ ë‹¤ì‹œ ë³´ë‚´ê¸° ìœ„í•œ ì½”ë“œ ì‘ì„± 
 		public void sendResponseToClient(String request) throws IOException {
-			// µ¥ÀÌÅÍ¸¦ client·Î º¸³»±â À§ÇÑ OutputStream ¼¼ÆÃ
-			// OutputStream¸¸ »ç¿ëÇØµµ Åë½ÅÀÌ °¡´ÉÇÏÁö¸¸, ÇØ´ç ÇÔ¼ö´Â ¹«Á¶°Ç byte·Î Åë½ÅÇÕ´Ï´Ù
+			// ë°ì´í„°ë¥¼ clientë¡œ ë³´ë‚´ê¸° ìœ„í•œ OutputStream ì„¸íŒ…
+			// OutputStreamë§Œ ì‚¬ìš©í•´ë„ í†µì‹ ì´ ê°€ëŠ¥í•˜ì§€ë§Œ, í•´ë‹¹ í•¨ìˆ˜ëŠ” ë¬´ì¡°ê±´ byteë¡œ í†µì‹ í•©ë‹ˆë‹¤
 			OutputStream baseOutputStream = client.getOutputStream(); 
-			// ±×·¡¼­ byte¸¦ StringÀ¸·Î º¯È¯ÇÏ¿© »ç¿ëÇÒ ¼ö ÀÖ°ÔÇÏ´Â OutputStreamWriter¸¦ »ç¿ëÇßÀ¸¸ç,
+			// ê·¸ë˜ì„œ byteë¥¼ Stringìœ¼ë¡œ ë³€í™˜í•˜ì—¬ ì‚¬ìš©í•  ìˆ˜ ìˆê²Œí•˜ëŠ” OutputStreamWriterë¥¼ ì‚¬ìš©í–ˆìœ¼ë©°,
 			OutputStreamWriter outputStreamWriter = new OutputStreamWriter(baseOutputStream);
-			// Àü¼Û¼ÓµµÀÇ Çâ»óÀ» À§ÇØ¼­ BufferedWriter¸¦ »ç¿ëÇß½À´Ï´Ù. °á°úÀûÀ¸·Ğ OutputStream¸¦ »ç¿ëÇÑ °Í°ú °°½À´Ï´Ù.
+			// ì „ì†¡ì†ë„ì˜ í–¥ìƒì„ ìœ„í•´ì„œ BufferedWriterë¥¼ ì‚¬ìš©í–ˆìŠµë‹ˆë‹¤. ê²°ê³¼ì ìœ¼ë¡  OutputStreamë¥¼ ì‚¬ìš©í•œ ê²ƒê³¼ ê°™ìŠµë‹ˆë‹¤.
 			BufferedWriter prettyOutput = new BufferedWriter(outputStreamWriter);
 			
-			prettyOutput.write(request + '\0'); // ÇØ´ç ¹®ÀÚ¿­À» client¿¡°Ô ¹®ÀÚ¿­ Ãâ·Â 
-			prettyOutput.flush(); // ¹öÆÛ¸¦ ºñ¿ì¸é¼­ client¿¡°Ô µ¥ÀÌÅÍ Àü¼Û 
+			prettyOutput.write(request + '\0'); // í•´ë‹¹ ë¬¸ìì—´ì„ clientì—ê²Œ ë¬¸ìì—´ ì¶œë ¥ 
+			prettyOutput.flush(); // ë²„í¼ë¥¼ ë¹„ìš°ë©´ì„œ clientì—ê²Œ ë°ì´í„° ì „ì†¡ 
 
 			/*
-			 * // client°¡ º¸³½ StringÀ» " "¸¦ ±âÁØÀ¸·Î ºĞÇÒ 
+			 * // clientê°€ ë³´ë‚¸ Stringì„ " "ë¥¼ ê¸°ì¤€ìœ¼ë¡œ ë¶„í•  
 			String[] splited = request.split(" ");
-			if (splited[0].equals("user")) { // ¸¸¾à ºĞÇÒÇÑ Ã¹ ¹øÂ° ¹®ÀÚ¿­ÀÌ "id"ÀÌ¸é
-				if (splited[1].equals("pass")) { // ¸¸¾à ºĞÇÒÇÑ µÎ ¹øÂ° ¹®ÀÚ¿­ÀÌ "kim_chulsu"ÀÌ¸é(»ç¿ëÀÚ ±¸ºĞ)
-					prettyOutput.write("access server "); // ÇØ´ç ¹®ÀÚ¿­À» client¿¡°Ô ¹®ÀÚ¿­ Ãâ·Â 
+			if (splited[0].equals("user")) { // ë§Œì•½ ë¶„í• í•œ ì²« ë²ˆì§¸ ë¬¸ìì—´ì´ "id"ì´ë©´
+				if (splited[1].equals("pass")) { // ë§Œì•½ ë¶„í• í•œ ë‘ ë²ˆì§¸ ë¬¸ìì—´ì´ "kim_chulsu"ì´ë©´(ì‚¬ìš©ì êµ¬ë¶„)
+					prettyOutput.write("access server "); // í•´ë‹¹ ë¬¸ìì—´ì„ clientì—ê²Œ ë¬¸ìì—´ ì¶œë ¥ 
 				} else {
-					prettyOutput.write("µî·ÏµÇÁö ¾ÊÀº ¾ÆÀÌµğÀÔ´Ï´Ù!\n"); // ÇØ´ç ¹®ÀÚ¿­À»  client¿¡°Ô ¹®ÀÚ¿­ Ãâ·Â
+					prettyOutput.write("ë“±ë¡ë˜ì§€ ì•Šì€ ì•„ì´ë””ì…ë‹ˆë‹¤!\n"); // í•´ë‹¹ ë¬¸ìì—´ì„  clientì—ê²Œ ë¬¸ìì—´ ì¶œë ¥
 				}
-				prettyOutput.flush(); // ¹öÆÛ¸¦ ºñ¿ì¸é¼­ client¿¡°Ô µ¥ÀÌÅÍ Àü¼Û 
+				prettyOutput.flush(); // ë²„í¼ë¥¼ ë¹„ìš°ë©´ì„œ clientì—ê²Œ ë°ì´í„° ì „ì†¡ 
 			}
 			 */
 			
-			// ¼­¹ö¿¡ ·Î±× ÀÛ¼º 
-			// System.out.print("´ÙÀ½°ú °°Àº ¿äÃ»À» ¹Ş¾Ò½À´Ï´Ù: "+splited[0]+"\n¦¦¿äÃ»ÇÑ Å¬¶óÀÌ¾ğÆ®: "+client.toString());
+			// ì„œë²„ì— ë¡œê·¸ ì‘ì„± 
+			// System.out.print("ë‹¤ìŒê³¼ ê°™ì€ ìš”ì²­ì„ ë°›ì•˜ìŠµë‹ˆë‹¤: "+splited[0]+"\nâ””ìš”ì²­í•œ í´ë¼ì´ì–¸íŠ¸: "+client.toString());
 		}
 	}
 }
