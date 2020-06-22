@@ -17,7 +17,7 @@ public class ServerConnect {
 	// 클라이언트가 서버로 데이터를 보낼때 사용 
 	public boolean sendData(String sendToServer) {
 		try {
-			Socket server = new Socket("127.0.0.1", 3000);
+			Socket server = new Socket("13.209.99.64", 8080);
 			
 			this.server = server;
 			

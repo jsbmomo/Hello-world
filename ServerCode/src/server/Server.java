@@ -1,4 +1,4 @@
-package server;
+package src.server;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -17,8 +17,6 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import javafx.scene.control.SplitPane.Divider;
-
 
 public class Server {
 	public static void main(String[] args) {
@@ -30,7 +28,7 @@ public class Server {
 class ServerProcessor {
 	public ServerProcessor() { // ServerProcessro 객체가 생성되자마자 바로 실행
 		try {
-			ServerSocket server = new ServerSocket(3000); // 소캣 서버 포트 지정 + 서버 소켓(객체) 생성
+			ServerSocket server = new ServerSocket(8080); // 소캣 서버 포트 지정 + 서버 소켓(객체) 생성
 			System.out.println("3000번 포트에서 클라이언트의 접속을 기다립니다...");
 			
 			while (true) { // client의 접속을 계속 받으면서 서버를 계속 실행하는 구간
@@ -137,29 +135,49 @@ class ServerProcessor {
 			}
 			System.out.println("------------------");
 			
-			Connection con = null;
+			Connection con = null; // 진료기록을 추가하기위해 사용
+			Connection con2 = null; //수정된 진료기록을 클라이언트로 다시 전송 
 			PreparedStatement pstmt = null;
+			PreparedStatement pstmt2 = null;
+			ResultSet rs = null;
+			ResultSetMetaData rsmd = null;
 			
 			String sql = "insert into patient_data (id, hospital, docter, record) values (?,?,?,?)";
+			String returnPatientData = "select * from patient_data order by number desc limit 1";
 			
 			try {
 				Class.forName(driver);
 				
 				con = DriverManager.getConnection(jdburl, dbId, dbPw);
-				
-				System.out.println("'"+Integer.valueOf(newInformation[0])+"'");
-				System.out.println("'"+newInformation[1]+"'");
-				System.out.println("'"+newInformation[2]+"'");
-				
+
 				pstmt = con.prepareStatement(sql);
 				pstmt.setInt(1, Integer.valueOf(newInformation[0]));
 				pstmt.setString(2, newInformation[1]);
 				pstmt.setString(3, newInformation[2]);
 				pstmt.setString(4, newInformation[3]);
-				//pstmt.executeUpdate(sql);
 				pstmt.executeUpdate();
+			
 				
-				sendResponseToClient("NewData");
+				// 가장 최근에 추가된 데이터를 다시 클라이언트에게 전송 
+				String addPatientData = "NewData/";
+				
+				con2 = DriverManager.getConnection(jdburl, dbId, dbPw);
+				
+				pstmt2 = con2.prepareStatement(returnPatientData);
+				rs = pstmt2.executeQuery();
+				rsmd = rs.getMetaData();
+				int count = rsmd.getColumnCount();
+				
+				rs.next();
+				for(int i = 3; i <= count; i++ ){
+					addPatientData += rs.getNString(i);
+					addPatientData += "#";
+				}
+				addPatientData = addPatientData.substring(0, addPatientData.length() - 1);
+				
+				System.out.println("Return to add patient data : " + addPatientData);
+				
+				sendResponseToClient(addPatientData);
 				
 			}catch(ClassNotFoundException e) {
 				System.out.println("해당 테이블을 찾을 수 없습니다.");

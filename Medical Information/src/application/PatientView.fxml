@@ -46,7 +46,7 @@
             <Font size="15.0" />
          </font>
       </Text>
-      <TableView fx:id="patientTable" layoutX="27.0" layoutY="316.0" onSort="#initialize" prefHeight="353.0" prefWidth="596.0">
+      <TableView fx:id="patientTable" layoutX="27.0" layoutY="316.0" onSort="#initialize" prefHeight="353.0" prefWidth="596.0" stylesheets="@application.css">
         <columns>
           <TableColumn fx:id="dateColumn" prefWidth="100.0" text="날  짜" />
           <TableColumn fx:id="hospitalColumn" prefWidth="100.0" text="병  원" />

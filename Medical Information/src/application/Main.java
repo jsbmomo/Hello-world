@@ -1,8 +1,5 @@
 package application;
 	
-import java.io.IOException;
-import java.net.Socket;
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

@@ -34,6 +34,7 @@ public class PatientData {
 	@FXML private TableColumn<PatientTableData, String> docterColumn;
 	@FXML private TableColumn<PatientTableData, String> registerColumn;
 	
+	ArrayList<PatientTableData> classification;
 	
 	@FXML
 	public void initialize()  { // 초기에 화면이 시작하면 실행
@@ -56,7 +57,7 @@ public class PatientData {
 		lblSocial.setText(patientInfo[3]);
 		lblPhone.setText(patientInfo[4]);
 		lblJob.setText(patientInfo[5]);
-	
+
 		String[] patientData = null; // 환자의 진료기록을 저장할 문자열
 	
 		if(count >= 7) {
@@ -69,8 +70,9 @@ public class PatientData {
 				patientData[0] = patientInfo[6];
 			}
 			
-			// 분할한 환자의 진단 기록을 분류 
-			ArrayList<PatientTableData> classification = new ArrayList<PatientTableData>();
+			// 분할한 환자의 진단 기록을 분류. ArrayList를 통해 
+			// 환자의 개인정보 및 진료기록을 객체로 저장 
+			classification = new ArrayList<PatientTableData>();
 			for(String array : patientData) {
 				String[] register = array.split("#");
 				classification.add(
@@ -78,12 +80,17 @@ public class PatientData {
 				);
 			}
 			
+			// 실제로 TableView의 내용을 생성하는 코드 
 			ObservableList<PatientTableData> patientList = FXCollections.observableArrayList(classification);
 			
 			dateColumn.setCellValueFactory(cellData -> cellData.getValue().dateProperty());
+			dateColumn.setStyle("-fx-alignment: CENTER;");
 			hospitalColumn.setCellValueFactory(cellData -> cellData.getValue().hospitalProperty());
-			docterColumn.setCellValueFactory(cellData -> cellData.getValue().docterProperty()); 
+			hospitalColumn.setStyle("-fx-alignment: CENTER;");
+			docterColumn.setCellValueFactory(cellData -> cellData.getValue().docterProperty());
+			docterColumn.setStyle("-fx-alignment: CENTER;");
 			registerColumn.setCellValueFactory(cellData -> cellData.getValue().registerProperty());
+			
 			patientTable.setItems(patientList);
 		}
 	}
@@ -97,11 +104,31 @@ public class PatientData {
 			Stage stage = new Stage();
 			stage.setScene(new Scene(printAgree));
 			stage.setTitle("Print Agreement");
-			stage.show();
+			stage.showAndWait();
 
+			String newDiagnosis = PassString.getAddTableData();
+			System.out.println(newDiagnosis);
+			// 만약 새로운 진료기록을 저장하는 String이 비어있지 않다면 
+			if(!newDiagnosis.equals("")) {
+				String[] newRegister = newDiagnosis.split("#");
+				
+				for(String i : newRegister)
+					System.out.print(newRegister + "*" );
+				
+				// 기존 TableView에 보여지는 진료기록에 추가 
+				patientTable.getItems().add(
+						new PatientTableData(newRegister[0], newRegister[2], newRegister[1], newRegister[3])
+				);
+				
+				// 다음 작업 준비를 위한 초기화
+				PassString.setAddTableData("");
+			}
+			
+			
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
+
 	
 }
