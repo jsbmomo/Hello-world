@@ -3,3 +3,7 @@
 .pane {
 	-fx-background-color:  #ffff00;
 }
+
+#my-table .table-column{
+	-fx-alignment: CENTER-RIGHT;
+}

@@ -66,12 +66,13 @@ public class StaffPage implements Initializable{
 		try {
 			System.out.println("print document");
 			
-			Parent printAgree = FXMLLoader.load(getClass().getResource("/application/"));
+			/*
+			Parent printAgree = FXMLLoader.load(getClass().getResource("/application/PrintAgreement.fxml"));
 			Stage stage = new Stage();
 			stage.setScene(new Scene(printAgree));
-			stage.setTitle("Print Agreement");
-			stage.show();
+			stage.setTitle("Print Agreement");*/
 
+			PrintTest.showAgreement();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}

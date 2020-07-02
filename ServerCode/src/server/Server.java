@@ -1,3 +1,5 @@
+package server;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -7,6 +9,10 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+
+import javax.net.ssl.SSLServerSocket;
+import javax.net.ssl.SSLServerSocketFactory;
+import javax.net.ssl.SSLSocket;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -14,6 +20,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+
 
 public class Server {
 	public static void main(String[] args) {
@@ -25,13 +32,23 @@ public class Server {
 class ServerProcessor {
 	public ServerProcessor() { // ServerProcessro 객체가 생성되자마자 바로 실행
 		try {
-			ServerSocket server = new ServerSocket(3000); // 소캣 서버 포트 지정 + 서버 소켓(객체) 생성
-			System.out.println("3000번 포트에서 클라이언트의 접속을 기다립니다...");
+			// SSLSocket 통신을 위해 사용하는 부분. 같은 프로젝트 안에 java key store가 있어야함 
+			//System.setProperty("javax.net.ssl.keyStore", "./server.jks");
+			//System.setProperty("javax.net.ssl.keyStorePassword", "123456");
+			//System.setProperty("javax.net.debug","ssl");
+
+			//SSLServerSocketFactory sslServerSocketFactory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
+			//SSLServerSocket server = (SSLServerSocket) sslServerSocketFactory.createServerSocket(8080); // 소캣 서버 포트 지정 + 서버 소켓(객체) 생성
+			ServerSocket server = new ServerSocket(3000);
+			
+			System.out.println("8080번 포트에서 클라이언트의 접속을 기다립니다...");
 			
 			while (true) { // client의 접속을 계속 받으면서 서버를 계속 실행하는 구간
 				try {
 					// client를 받았더라도, 스레드를 사용했기 때문에, 추가로 client를 받을 수 있다.
-					Socket client = server.accept(); // 소켓 객체에 client 접속을 받기를 대기 
+					//SSLSocket client = (SSLSocket) server.accept(); // 소켓 객체에 client 접속을 받기를 대기
+					
+					Socket client = server.accept();
 					
 					ClientProcessor processor = new ClientProcessor(client); // 접속한 client를 ClientProcessor의 메소드의 인자로
 					processor.start(); // ClientProcessor의 스레드가 실행되도록 함.(스레드는 start를 해야 시작된다.)
@@ -44,16 +61,17 @@ class ServerProcessor {
 	
 	
 	public class ClientProcessor extends Thread { // 쓰레드로 상속받아 clientProcessor 클래스를 생성.
+		//private final SSLSocket client;
 		private final Socket client;
 
 		// 연결할 DB에 대한 정보 입력
 		private final String driver = "org.mariadb.jdbc.Driver";
-		private final String jdburl = "jdbc:mariadb://127.0.0.1:3306/hospital";
+		private final String jdburl = "jdbc:mariadb://127.0.0.1:3306/hospital?useUnicode=true&characterEncoding=utf8";
 		private final String dbId = "jeon";
 		private final String dbPw = "password";
 				
 		
-		public ClientProcessor(Socket client) {
+		public ClientProcessor(Socket client) { // <== SSLSocket 사용시 매개변수룰 바꾸어 주어야함 
 			this.client = client; // client를 ClientProcessor 클래스의 Socket에 저장  
 		}
 		
@@ -65,7 +83,7 @@ class ServerProcessor {
 				// InputStream만 이용해도 client가 보낸 데이터를 받을 수 있지만 byte로 받아오기 때문에 
 				InputStream baseInputStream = client.getInputStream();
 				// InputStreamReader를 사용하여 문자열 값으로 편리하게 처리할 수 있게 하며
-				InputStreamReader inputStreamReader = new InputStreamReader(baseInputStream);
+				InputStreamReader inputStreamReader = new InputStreamReader(baseInputStream, "UTF-8");
 				// BufferedReader를 이용해 한줄 단위로 한꺼번에 읽어 올 수 있게 합니다.
 				BufferedReader prettyInput = new BufferedReader(inputStreamReader);
 				
@@ -117,7 +135,9 @@ class ServerProcessor {
 				}
 				System.out.println("Complited");
 				//client.close(); // client에 대한 작업이 끝낫으므로 소켓을 닫음.
-			} catch (IOException e) { e.printStackTrace(); }
+			} catch (IOException e) { 
+				e.printStackTrace();
+			}
 		}
 		
 		
@@ -132,29 +152,49 @@ class ServerProcessor {
 			}
 			System.out.println("------------------");
 			
-			Connection con = null;
+			Connection con = null; // 진료기록을 추가하기위해 사용
+			Connection con2 = null; //수정된 진료기록을 클라이언트로 다시 전송 
 			PreparedStatement pstmt = null;
+			PreparedStatement pstmt2 = null;
+			ResultSet rs = null;
+			ResultSetMetaData rsmd = null;
 			
 			String sql = "insert into patient_data (id, hospital, docter, record) values (?,?,?,?)";
+			String returnPatientData = "select * from patient_data order by number desc limit 1";
 			
 			try {
 				Class.forName(driver);
 				
 				con = DriverManager.getConnection(jdburl, dbId, dbPw);
-				
-				System.out.println("'"+Integer.valueOf(newInformation[0])+"'");
-				System.out.println("'"+newInformation[1]+"'");
-				System.out.println("'"+newInformation[2]+"'");
-				
+
 				pstmt = con.prepareStatement(sql);
 				pstmt.setInt(1, Integer.valueOf(newInformation[0]));
 				pstmt.setString(2, newInformation[1]);
 				pstmt.setString(3, newInformation[2]);
 				pstmt.setString(4, newInformation[3]);
-				//pstmt.executeUpdate(sql);
 				pstmt.executeUpdate();
+			
 				
-				sendResponseToClient("NewData");
+				// 가장 최근에 추가된 데이터를 다시 클라이언트에게 전송 
+				String addPatientData = "NewData/";
+				
+				con2 = DriverManager.getConnection(jdburl, dbId, dbPw);
+				
+				pstmt2 = con2.prepareStatement(returnPatientData);
+				rs = pstmt2.executeQuery();
+				rsmd = rs.getMetaData();
+				int count = rsmd.getColumnCount();
+				
+				rs.next();
+				for(int i = 3; i <= count; i++ ){
+					addPatientData += rs.getNString(i);
+					addPatientData += "#";
+				}
+				addPatientData = addPatientData.substring(0, addPatientData.length() - 1);
+				
+				System.out.println("Return to add patient data : " + addPatientData);
+				
+				sendResponseToClient(addPatientData);
 				
 			}catch(ClassNotFoundException e) {
 				System.out.println("해당 테이블을 찾을 수 없습니다.");
@@ -390,6 +430,7 @@ class ServerProcessor {
 				}
 				
 			}catch(ClassNotFoundException e) {
+				e.printStackTrace();
 				System.out.println("해당 클래스를 찾을 수 없습니다.");
 			}catch(SQLException e) {
 				e.printStackTrace();
@@ -410,7 +451,7 @@ class ServerProcessor {
 		public void ReceiveUserData(String ClientData) {
 			String[] userData = ClientData.split(" ", 2);
 			boolean loginDB = false;
-			System.out.println("접속을 시도하는 Client의 ID와 PW : " + userData[0]+ " | " + userData[1]);
+			System.out.println("접속을 시도하는 Client의 ID : " + userData[0]);
 			Connection con = null;
 			Statement stmt = null;
 			ResultSet rs = null;
@@ -427,7 +468,7 @@ class ServerProcessor {
 					stmt = con.createStatement(); // 쿼리 수행을 위한 statement 객체 생성 
 					
 					// user_info 테이블의 user_id / user_pw만 가져오는 sql문 
-					String sql = "select * from USER_INFO"; 
+					String sql = "select * from user_info"; 
 					
 					rs = stmt.executeQuery(sql);
 					
@@ -441,6 +482,7 @@ class ServerProcessor {
 					
 					con.close();
 				} catch(ClassNotFoundException e) {
+					e.printStackTrace();
 					System.out.println("해당 클래스를 찾을 수 없습니다.");
 				} catch (SQLException e) {
 					e.printStackTrace();
@@ -473,7 +515,7 @@ class ServerProcessor {
 			// OutputStream만 사용해도 통신이 가능하지만, 해당 함수는 무조건 byte로 통신합니다
 			OutputStream baseOutputStream = client.getOutputStream(); 
 			// 그래서 byte를 String으로 변환하여 사용할 수 있게하는 OutputStreamWriter를 사용했으며,
-			OutputStreamWriter outputStreamWriter = new OutputStreamWriter(baseOutputStream);
+			OutputStreamWriter outputStreamWriter = new OutputStreamWriter(baseOutputStream, "UTF-8");
 			// 전송속도의 향상을 위해서 BufferedWriter를 사용했습니다. 결과적으론 OutputStream를 사용한 것과 같습니다.
 			BufferedWriter prettyOutput = new BufferedWriter(outputStreamWriter);
 			
