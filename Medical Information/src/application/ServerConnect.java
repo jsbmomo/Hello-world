@@ -33,7 +33,7 @@ public class ServerConnect {
 			//SSLSocket server = (SSLSocket) sslSocketFactory.createSocket("13.209.99.64", 8080);  //"13.209.99.64", 8080 "127.0.0.1", 3000
 			
 			Socket server = new Socket("127.0.0.1", 3000);
-			
+			System.out.println("내부 IP 주소로 통해 테스트");
 			this.server = server;
 			
 			// 서버에 데이터를 보내기 위한 변수(문자열)를 준비
