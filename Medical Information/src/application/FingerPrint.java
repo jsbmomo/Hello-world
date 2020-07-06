@@ -61,10 +61,8 @@ public class FingerPrint {
 			}
 			else {
 				dataAccess = false;
-				Alert alert = new Alert(AlertType.INFORMATION);
-				alert.setTitle("알림");
-				alert.setHeaderText("등록되지 않는 환자입니다.");
-				alert.showAndWait();
+				
+				new AlertPage("등록되지 않은 환자입니다.", 1, null);
 			}
 			
 			System.out.println(dataAccess);

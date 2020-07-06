@@ -62,13 +62,8 @@ public class AddPatient {
 			
 			// 서버로부터 응답을 받아 DB에 데이터가 성공적으로 저장되었는지 확인 
 			if(response[0].equals("Done")) {
-				Alert alert = new Alert(AlertType.INFORMATION);
 				
-				alert.setTitle("Information");
-				alert.setWidth(400);
-				alert.setHeaderText(null);
-				alert.setContentText("성공적으로 환자를 추가하였습니다");
-				alert.showAndWait();
+				new AlertPage("성공적으로 환자를 추가하였습니다.", 2, null);
 				
 				txtname.clear();
 				txtage.clear();

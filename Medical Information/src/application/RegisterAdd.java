@@ -40,11 +40,7 @@ public class RegisterAdd  {
 			String[] receiveToServer = server.receiveData().split("/",2);
 			
 			if(receiveToServer[0].equals("NewData")) {
-				Alert alert = new Alert(AlertType.INFORMATION);
-				alert.setTitle("Information");
-				alert.setContentText("성공적으로 진료 기록을 추가하였습니다.");
-				alert.setHeaderText(null);
-				alert.showAndWait();
+				new AlertPage("성공적으로 진료 기록을 추가하였습니다.", 2, null);
 				
 				// TableView에 새로 추가한 진료기록을 바로 업로드
 				System.out.println("진료기록 " + receiveToServer[1] + "을 TableView에 추가합니다.");
@@ -52,21 +48,13 @@ public class RegisterAdd  {
 				
 				Stage stage = (Stage) btnSendData.getScene().getWindow();
 				stage.close();
+				
 			} else {
-				Alert alert = new Alert(AlertType.WARNING);
-				alert.setTitle("Information");
-				alert.setContentText("진료기록을 추가하지 못했습니다.");
-				alert.setHeaderText("모든 정보를 입력하셨는지 확인해주세요.");
-				alert.setHeaderText(null);
-				alert.showAndWait();
+				new AlertPage("진료기록을 추가하지 못했습니다.", 2, "모든 정보를 입력하셨는지 확인해주세요.");
 			}
 			
 		} else {
-			Alert alert = new Alert(AlertType.WARNING);
-			alert.setTitle("Information");
-			alert.setContentText("데이터를 모두 입력해야 합니다.");
-			alert.setHeaderText(null);
-			alert.showAndWait();
+			new AlertPage("데이터를 모두 입력해야 합니다.", 1, null);
 		}
 		
 	}

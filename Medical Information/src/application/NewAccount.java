@@ -74,34 +74,19 @@ public class NewAccount {
 			
 			
 			if(serverData[0].equals("ID_Error")) { // 만약 DB내에 존재하는 아이디라면
-				Alert alert = new Alert(AlertType.WARNING);
-				alert.setTitle("Information");
-				
-				alert.setContentText("이미 존재하는 ID입니다.");
-				alert.setHeaderText(null);
-				alert.showAndWait();
+				new AlertPage("이미 존재하는 ID입니다.", 1, null);
 
 				lblStatus.setText("이미 존재하는 ID입니다.");
 				lblStatus.setTextFill(Color.rgb(210,39,30));
 			} 
 			else if(serverData[0].equals("Qualification_Error")) { // 만약 DB내에 존재하는 자격번호라면
-				Alert alert = new Alert(AlertType.WARNING);
-				alert.setTitle("Information");
-				
-				alert.setContentText("이미 등록된 자격번호 입니다.");
-				alert.setHeaderText(null);
-				alert.showAndWait();
+				new AlertPage("이미 등록된 자격번호입니다.", 1, null);
 				
 				lblStatus.setText("이미 등록된 의료자격 번호입니다.");
 				lblStatus.setTextFill(Color.rgb(210,39,30));				
 			}
 			else if(serverData[0].equals("Created")) { // 만약 정상적으로 DB에 추가되었다면
-				Alert alert = new Alert(AlertType.INFORMATION);
-				alert.setTitle("Information");
-				
-				alert.setContentText("계정을 생성하였습니다.");
-				alert.setHeaderText(null);
-				alert.showAndWait();
+				new AlertPage("계정을 생성하였습니다.", 2, null);
 				
 				lblStatus.setText("성공적으로 계정을 생성하였습니다!");
 				lblStatus.setTextFill(Color.rgb(21,117,84));
