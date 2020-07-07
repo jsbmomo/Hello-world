@@ -21,15 +21,15 @@ public class RegisterAdd  {
 		record[1] = txtDocter.getText();
 		record[2] = txtRegister.getText();
 		
-		boolean judgeNull = true;
+		boolean judgeRecordNull = true;
 		for(String data : record) {
-			if(data.equals(" ")) {
-				judgeNull = false;
+			if(data == null || data.trim().isEmpty()) { // 값이 null이거나 비었거나, Whitespace일 경우를 판단
+				judgeRecordNull = false;
 				break;
 			}
 		}
 		
-		if(judgeNull) {
+		if(judgeRecordNull) {
 			ServerConnect server = new ServerConnect();
 			String sendString = "Diagnosis/" + PassString.getFingerData() + '#' + record[0] + '#' + record[1] + '#' + record[2] + '\0';
 			

@@ -72,7 +72,7 @@ public class StaffPage implements Initializable{
 			stage.setScene(new Scene(printAgree));
 			stage.setTitle("Print Agreement");*/
 
-			PrintTest.showAgreement();
+			PrintDocument.showAgreement();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
